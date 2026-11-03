@@ -8,7 +8,6 @@ internal static class Program
     [STAThread]
     static void Main()
     {
-        // Fuerza formato argentino para importes y fechas, sin depender de la configuración de Windows
         var cultura = new CultureInfo("es-AR");
         CultureInfo.CurrentCulture = cultura;
         CultureInfo.CurrentUICulture = cultura;

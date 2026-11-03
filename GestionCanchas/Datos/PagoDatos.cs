@@ -10,12 +10,27 @@ public class PagoDatos
     {
         using SqlConnection conexion = Conexion.Abrir();
         using var comando = new SqlCommand(
-            @"SELECT IdPago, IdReserva, FechaPago, Importe, MetodoPago
+            @"SELECT IdPago, IdReserva, FechaPago, Importe, MetodoPago, Tipo, Anulado
               FROM PAGOS
               WHERE IdReserva = @id
               ORDER BY FechaPago, IdPago", conexion);
         comando.Parameters.AddWithValue("@id", idReserva);
+        return Leer(comando);
+    }
 
+    public Pago ObtenerPorId(int idPago)
+    {
+        using SqlConnection conexion = Conexion.Abrir();
+        using var comando = new SqlCommand(
+            @"SELECT IdPago, IdReserva, FechaPago, Importe, MetodoPago, Tipo, Anulado
+              FROM PAGOS
+              WHERE IdPago = @id", conexion);
+        comando.Parameters.AddWithValue("@id", idPago);
+        return Leer(comando).FirstOrDefault();
+    }
+
+    private static List<Pago> Leer(SqlCommand comando)
+    {
         var pagos = new List<Pago>();
         using SqlDataReader lector = comando.ExecuteReader();
         while (lector.Read())
@@ -26,7 +41,9 @@ public class PagoDatos
                 IdReserva = (int)lector["IdReserva"],
                 FechaPago = (DateTime)lector["FechaPago"],
                 Importe = (decimal)lector["Importe"],
-                MetodoPago = (string)lector["MetodoPago"]
+                MetodoPago = (string)lector["MetodoPago"],
+                Tipo = (string)lector["Tipo"],
+                Anulado = (bool)lector["Anulado"]
             });
         }
         return pagos;
@@ -36,7 +53,7 @@ public class PagoDatos
     {
         using SqlConnection conexion = Conexion.Abrir();
         using var comando = new SqlCommand(
-            @"SELECT p.IdPago, p.IdReserva, p.FechaPago, p.Importe, p.MetodoPago,
+            @"SELECT p.IdPago, p.IdReserva, p.FechaPago, p.Importe, p.MetodoPago, p.Tipo, p.Anulado,
                      r.Fecha AS FechaReserva, c.Apellido, c.Nombre, c.DNI, ca.Numero, ca.Tipo
               FROM PAGOS p
               JOIN RESERVAS r ON r.IdReserva = p.IdReserva
@@ -60,6 +77,8 @@ public class PagoDatos
                 FechaPago = (DateTime)lector["FechaPago"],
                 Importe = (decimal)lector["Importe"],
                 MetodoPago = (string)lector["MetodoPago"],
+                Tipo = (string)lector["Tipo"],
+                Anulado = (bool)lector["Anulado"],
                 FechaReserva = (DateTime)lector["FechaReserva"],
                 Cliente = $"{lector["Apellido"]}, {lector["Nombre"]}",
                 Dni = (string)lector["DNI"],
@@ -69,7 +88,6 @@ public class PagoDatos
         return pagos;
     }
 
-    // Transacción: el pago y el nuevo estado de la reserva se graban juntos
     public void Registrar(Pago pago, string estadoReserva)
     {
         using SqlConnection conexion = Conexion.Abrir();
@@ -93,16 +111,41 @@ public class PagoDatos
         }
     }
 
-    // Se usa dentro de transacciones abiertas por esta clase o por ReservaDatos
+    public void Anular(int idPago, int idReserva, string estadoReserva)
+    {
+        using SqlConnection conexion = Conexion.Abrir();
+        using SqlTransaction transaccion = conexion.BeginTransaction();
+        try
+        {
+            using var anular = new SqlCommand("UPDATE PAGOS SET Anulado = 1 WHERE IdPago = @id", conexion, transaccion);
+            anular.Parameters.AddWithValue("@id", idPago);
+            anular.ExecuteNonQuery();
+
+            using var estado = new SqlCommand(
+                "UPDATE RESERVAS SET Estado = @estado WHERE IdReserva = @id", conexion, transaccion);
+            estado.Parameters.AddWithValue("@estado", estadoReserva);
+            estado.Parameters.AddWithValue("@id", idReserva);
+            estado.ExecuteNonQuery();
+
+            transaccion.Commit();
+        }
+        catch
+        {
+            transaccion.Rollback();
+            throw;
+        }
+    }
+
     internal static void Insertar(Pago pago, SqlConnection conexion, SqlTransaction transaccion)
     {
         using var comando = new SqlCommand(
-            @"INSERT INTO PAGOS (IdReserva, FechaPago, Importe, MetodoPago)
-              VALUES (@idReserva, @fecha, @importe, @metodo)", conexion, transaccion);
+            @"INSERT INTO PAGOS (IdReserva, FechaPago, Importe, MetodoPago, Tipo)
+              VALUES (@idReserva, @fecha, @importe, @metodo, @tipo)", conexion, transaccion);
         comando.Parameters.AddWithValue("@idReserva", pago.IdReserva);
         comando.Parameters.Add("@fecha", SqlDbType.Date).Value = pago.FechaPago.Date;
         comando.Parameters.AddWithValue("@importe", pago.Importe);
         comando.Parameters.AddWithValue("@metodo", pago.MetodoPago);
+        comando.Parameters.AddWithValue("@tipo", pago.Tipo);
         comando.ExecuteNonQuery();
     }
 }

@@ -25,7 +25,9 @@ public partial class FrmConsultaPagos : Form, IRefrescable
             dgvPagos.DataSource = pagos;
             Grillas.Formato(dgvPagos, "C2", "Importe");
             Grillas.Formato(dgvPagos, "dd/MM/yyyy", "FechaPago", "FechaReserva");
-            lblTotal.Text = $"Total cobrado: {pagos.Sum(p => p.Importe):C2}  ({pagos.Count} pagos)";
+            decimal total = pagos.Where(p => !p.Anulado)
+                                 .Sum(p => p.Tipo == TiposPago.Devolucion ? -p.Importe : p.Importe);
+            lblTotal.Text = $"Total cobrado (menos devoluciones): {total:C2}  ({pagos.Count} movimientos)";
         }
         catch (Exception ex)
         {

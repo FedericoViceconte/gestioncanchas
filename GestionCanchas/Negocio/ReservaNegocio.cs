@@ -30,7 +30,6 @@ public class ReservaNegocio
         if (fecha.Date != DateTime.Today)
             return libres;
 
-        // Para hoy solo se ofrecen los turnos que todavía no empezaron
         TimeSpan ahora = DateTime.Now.TimeOfDay;
         return libres.Where(h => h.HoraInicio > ahora).ToList();
     }
@@ -67,6 +66,8 @@ public class ReservaNegocio
             throw new ValidacionException("La reserva no existe.");
         if (actual.Estado == EstadosReserva.Cancelada)
             throw new ValidacionException("No se puede modificar una reserva cancelada.");
+        if (actual.Estado == EstadosReserva.Ausente)
+            throw new ValidacionException("No se puede modificar una reserva en la que el cliente no se presentó.");
 
         reserva.Importe = ValidarTurno(reserva);
 
@@ -75,7 +76,9 @@ public class ReservaNegocio
                 $"Ya se pagaron {actual.TotalPagado:C2}, más que el nuevo importe ({reserva.Importe:C2}).");
 
         reserva.Fecha = reserva.Fecha.Date;
-        reserva.Estado = actual.TotalPagado == reserva.Importe ? EstadosReserva.Pagado : EstadosReserva.Senado;
+        reserva.Estado = actual.TotalPagado == reserva.Importe ? EstadosReserva.Pagado
+                       : actual.TotalPagado == 0 ? EstadosReserva.Pendiente
+                       : EstadosReserva.Senado;
         _reservaDatos.Modificar(reserva);
     }
 
@@ -86,13 +89,33 @@ public class ReservaNegocio
             throw new ValidacionException("La reserva no existe.");
         if (reserva.Estado == EstadosReserva.Cancelada)
             throw new ValidacionException("La reserva ya está cancelada.");
+        if (reserva.Estado == EstadosReserva.Ausente)
+            throw new ValidacionException("La reserva ya está marcada como ausente.");
         if (reserva.Fecha.Date < DateTime.Today)
             throw new ValidacionException("No se puede cancelar una reserva de una fecha pasada.");
 
         _reservaDatos.Cancelar(idReserva);
     }
 
-    // Valida cliente, cancha, horario, fecha y disponibilidad. Devuelve el importe del turno
+    public void MarcarAusente(int idReserva)
+    {
+        ReservaDetalle reserva = _reservaDatos.ObtenerDetalle(idReserva);
+        if (reserva == null)
+            throw new ValidacionException("La reserva no existe.");
+        if (reserva.Estado == EstadosReserva.Cancelada)
+            throw new ValidacionException("La reserva está cancelada.");
+        if (reserva.Estado == EstadosReserva.Ausente)
+            throw new ValidacionException("La reserva ya está marcada como ausente.");
+
+        Horario horario = _horarioDatos.ObtenerPorId(reserva.IdHorario);
+        bool yaEmpezo = reserva.Fecha.Date < DateTime.Today ||
+                        (reserva.Fecha.Date == DateTime.Today && horario.HoraInicio <= DateTime.Now.TimeOfDay);
+        if (!yaEmpezo)
+            throw new ValidacionException("Solo se puede marcar como ausente un turno que ya empezó.");
+
+        _reservaDatos.MarcarAusente(idReserva);
+    }
+
     private decimal ValidarTurno(Reserva reserva)
     {
         if (_clienteDatos.ObtenerPorId(reserva.IdCliente) == null)

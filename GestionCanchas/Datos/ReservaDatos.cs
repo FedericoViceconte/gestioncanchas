@@ -25,12 +25,14 @@ public class ReservaDatos
                  AND (@dni IS NULL OR c.DNI = @dni)
                  AND (@idCancha IS NULL OR s.IdCancha = @idCancha)
                  AND (@estado IS NULL OR s.Estado = @estado)
+                 AND (@conSaldo = 0 OR (s.Saldo > 0 AND s.Estado IN ('Pendiente', 'Señado')))
                ORDER BY s.Fecha DESC, h.HoraInicio", conexion);
 
         comando.Parameters.Add("@fecha", SqlDbType.Date).Value = (object)filtro.Fecha ?? DBNull.Value;
         comando.Parameters.Add("@dni", SqlDbType.VarChar, 8).Value = (object)filtro.Dni ?? DBNull.Value;
         comando.Parameters.Add("@idCancha", SqlDbType.Int).Value = (object)filtro.IdCancha ?? DBNull.Value;
         comando.Parameters.Add("@estado", SqlDbType.VarChar, 20).Value = (object)filtro.Estado ?? DBNull.Value;
+        comando.Parameters.Add("@conSaldo", SqlDbType.Bit).Value = filtro.SoloConSaldo;
         return LeerDetalle(comando);
     }
 
@@ -83,7 +85,6 @@ public class ReservaDatos
         return (int)comando.ExecuteScalar() > 0;
     }
 
-    // Transacción: la reserva y su seña se graban juntas o no se graba ninguna
     public int InsertarConSena(Reserva reserva, Pago sena)
     {
         using SqlConnection conexion = Conexion.Abrir();
@@ -130,6 +131,16 @@ public class ReservaDatos
         using var comando = new SqlCommand(
             "UPDATE RESERVAS SET Estado = @cancelada WHERE IdReserva = @id", conexion);
         comando.Parameters.AddWithValue("@cancelada", EstadosReserva.Cancelada);
+        comando.Parameters.AddWithValue("@id", idReserva);
+        comando.ExecuteNonQuery();
+    }
+
+    public void MarcarAusente(int idReserva)
+    {
+        using SqlConnection conexion = Conexion.Abrir();
+        using var comando = new SqlCommand(
+            "UPDATE RESERVAS SET Estado = @ausente WHERE IdReserva = @id", conexion);
+        comando.Parameters.AddWithValue("@ausente", EstadosReserva.Ausente);
         comando.Parameters.AddWithValue("@id", idReserva);
         comando.ExecuteNonQuery();
     }

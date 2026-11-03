@@ -29,6 +29,14 @@ public static class Grillas
         }
     }
 
+    public static void Ocultar(DataGridView grilla, params string[] columnas)
+    {
+        foreach (string nombre in columnas)
+        {
+            if (grilla.Columns.Contains(nombre))
+                grilla.Columns[nombre].Visible = false;
+        }
+    }
     public static T Seleccionado<T>(DataGridView grilla) where T : class =>
         grilla.CurrentRow?.DataBoundItem as T;
 

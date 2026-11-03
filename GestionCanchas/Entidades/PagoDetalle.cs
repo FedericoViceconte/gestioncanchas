@@ -27,4 +27,8 @@ public class PagoDetalle
 
     [DisplayName("Método")]
     public string MetodoPago { get; set; }
+
+    public string Tipo { get; set; }
+
+    public bool Anulado { get; set; }
 }

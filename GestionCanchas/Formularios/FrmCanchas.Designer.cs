@@ -35,9 +35,6 @@ partial class FrmCanchas
         ((System.ComponentModel.ISupportInitialize)nudPrecio).BeginInit();
         ((System.ComponentModel.ISupportInitialize)dgvCanchas).BeginInit();
         SuspendLayout();
-        // 
-        // grpDatos
-        // 
         grpDatos.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         grpDatos.Controls.Add(lblNumero);
         grpDatos.Controls.Add(nudNumero);
@@ -56,18 +53,12 @@ partial class FrmCanchas
         grpDatos.TabIndex = 0;
         grpDatos.TabStop = false;
         grpDatos.Text = "Datos de la cancha";
-        // 
-        // lblNumero
-        // 
         lblNumero.AutoSize = true;
         lblNumero.Location = new Point(15, 30);
         lblNumero.Name = "lblNumero";
         lblNumero.Size = new Size(54, 15);
         lblNumero.TabIndex = 0;
         lblNumero.Text = "Número:";
-        // 
-        // nudNumero
-        // 
         nudNumero.Location = new Point(100, 27);
         nudNumero.Maximum = new decimal(new int[] { 999, 0, 0, 0 });
         nudNumero.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
@@ -75,37 +66,24 @@ partial class FrmCanchas
         nudNumero.Size = new Size(80, 23);
         nudNumero.TabIndex = 1;
         nudNumero.Value = new decimal(new int[] { 1, 0, 0, 0 });
-        nudNumero.ValueChanged += nudNumero_ValueChanged;
-        // 
-        // lblTipo
-        // 
         lblTipo.AutoSize = true;
         lblTipo.Location = new Point(200, 30);
         lblTipo.Name = "lblTipo";
         lblTipo.Size = new Size(34, 15);
         lblTipo.TabIndex = 2;
         lblTipo.Text = "Tipo:";
-        // 
-        // cboTipo
-        // 
         cboTipo.Items.AddRange(new object[] { "Fútbol 5", "Fútbol 7", "Fútbol 8", "Fútbol 11" });
         cboTipo.Location = new Point(245, 27);
         cboTipo.MaxLength = 30;
         cboTipo.Name = "cboTipo";
         cboTipo.Size = new Size(150, 23);
         cboTipo.TabIndex = 3;
-        // 
-        // lblPrecio
-        // 
         lblPrecio.AutoSize = true;
         lblPrecio.Location = new Point(415, 30);
         lblPrecio.Name = "lblPrecio";
         lblPrecio.Size = new Size(91, 15);
         lblPrecio.TabIndex = 4;
         lblPrecio.Text = "Precio por hora:";
-        // 
-        // nudPrecio
-        // 
         nudPrecio.DecimalPlaces = 2;
         nudPrecio.Increment = new decimal(new int[] { 1000, 0, 0, 0 });
         nudPrecio.Location = new Point(520, 27);
@@ -114,26 +92,17 @@ partial class FrmCanchas
         nudPrecio.Size = new Size(120, 23);
         nudPrecio.TabIndex = 5;
         nudPrecio.ThousandsSeparator = true;
-        // 
-        // lblEstado
-        // 
         lblEstado.AutoSize = true;
         lblEstado.Location = new Point(660, 30);
         lblEstado.Name = "lblEstado";
         lblEstado.Size = new Size(45, 15);
         lblEstado.TabIndex = 6;
         lblEstado.Text = "Estado:";
-        // 
-        // cboEstado
-        // 
         cboEstado.DropDownStyle = ComboBoxStyle.DropDownList;
         cboEstado.Location = new Point(715, 27);
         cboEstado.Name = "cboEstado";
         cboEstado.Size = new Size(140, 23);
         cboEstado.TabIndex = 7;
-        // 
-        // btnNuevo
-        // 
         btnNuevo.Location = new Point(100, 64);
         btnNuevo.Name = "btnNuevo";
         btnNuevo.Size = new Size(90, 28);
@@ -141,9 +110,6 @@ partial class FrmCanchas
         btnNuevo.Text = "Nuevo";
         btnNuevo.UseVisualStyleBackColor = true;
         btnNuevo.Click += btnNuevo_Click;
-        // 
-        // btnGuardar
-        // 
         btnGuardar.Location = new Point(200, 64);
         btnGuardar.Name = "btnGuardar";
         btnGuardar.Size = new Size(90, 28);
@@ -151,9 +117,6 @@ partial class FrmCanchas
         btnGuardar.Text = "Guardar";
         btnGuardar.UseVisualStyleBackColor = true;
         btnGuardar.Click += btnGuardar_Click;
-        // 
-        // btnEliminar
-        // 
         btnEliminar.Location = new Point(300, 64);
         btnEliminar.Name = "btnEliminar";
         btnEliminar.Size = new Size(90, 28);
@@ -161,9 +124,6 @@ partial class FrmCanchas
         btnEliminar.Text = "Eliminar";
         btnEliminar.UseVisualStyleBackColor = true;
         btnEliminar.Click += btnEliminar_Click;
-        // 
-        // dgvCanchas
-        // 
         dgvCanchas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         dgvCanchas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dgvCanchas.Location = new Point(12, 132);
@@ -171,9 +131,6 @@ partial class FrmCanchas
         dgvCanchas.Size = new Size(876, 416);
         dgvCanchas.TabIndex = 1;
         dgvCanchas.CellClick += dgvCanchas_CellClick;
-        // 
-        // FrmCanchas
-        // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         ClientSize = new Size(900, 560);

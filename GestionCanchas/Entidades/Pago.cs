@@ -17,4 +17,8 @@ public class Pago
 
     [DisplayName("Método")]
     public string MetodoPago { get; set; }
+
+    public string Tipo { get; set; } = TiposPago.Pago;
+
+    public bool Anulado { get; set; }
 }

@@ -32,6 +32,9 @@ partial class FrmConsultaReservas
         btnModificar = new Button();
         btnCancelarReserva = new Button();
         btnRegistrarPago = new Button();
+        btnAusente = new Button();
+        btnAnularPago = new Button();
+        btnDevolucion = new Button();
         lblPagos = new Label();
         dgvPagos = new DataGridView();
         grpFiltros.SuspendLayout();
@@ -164,6 +167,33 @@ partial class FrmConsultaReservas
         btnRegistrarPago.UseVisualStyleBackColor = true;
         btnRegistrarPago.Click += btnRegistrarPago_Click;
 
+        btnAusente.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnAusente.Location = new Point(390, 383);
+        btnAusente.Name = "btnAusente";
+        btnAusente.Size = new Size(130, 30);
+        btnAusente.TabIndex = 7;
+        btnAusente.Text = "No se presentó";
+        btnAusente.UseVisualStyleBackColor = true;
+        btnAusente.Click += btnAusente_Click;
+
+        btnAnularPago.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnAnularPago.Location = new Point(526, 383);
+        btnAnularPago.Name = "btnAnularPago";
+        btnAnularPago.Size = new Size(110, 30);
+        btnAnularPago.TabIndex = 8;
+        btnAnularPago.Text = "Anular pago";
+        btnAnularPago.UseVisualStyleBackColor = true;
+        btnAnularPago.Click += btnAnularPago_Click;
+
+        btnDevolucion.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnDevolucion.Location = new Point(642, 383);
+        btnDevolucion.Name = "btnDevolucion";
+        btnDevolucion.Size = new Size(140, 30);
+        btnDevolucion.TabIndex = 9;
+        btnDevolucion.Text = "Registrar devolución";
+        btnDevolucion.UseVisualStyleBackColor = true;
+        btnDevolucion.Click += btnDevolucion_Click;
+
         lblPagos.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         lblPagos.AutoSize = true;
         lblPagos.Location = new Point(12, 423);
@@ -187,6 +217,9 @@ partial class FrmConsultaReservas
         Controls.Add(btnModificar);
         Controls.Add(btnCancelarReserva);
         Controls.Add(btnRegistrarPago);
+        Controls.Add(btnAusente);
+        Controls.Add(btnAnularPago);
+        Controls.Add(btnDevolucion);
         Controls.Add(lblPagos);
         Controls.Add(dgvPagos);
         Name = "FrmConsultaReservas";
@@ -217,6 +250,9 @@ partial class FrmConsultaReservas
     private Button btnModificar;
     private Button btnCancelarReserva;
     private Button btnRegistrarPago;
+    private Button btnAusente;
+    private Button btnAnularPago;
+    private Button btnDevolucion;
     private Label lblPagos;
     private DataGridView dgvPagos;
 }

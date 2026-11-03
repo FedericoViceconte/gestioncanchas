@@ -21,7 +21,6 @@ public partial class FrmPagos : Form, IRefrescable
         cboMetodo.SelectedIndex = 0;
     }
 
-    // Abre el formulario con una reserva ya elegida (desde Consultar reservas)
     public FrmPagos(int idReserva) : this()
     {
         _idReservaInicial = idReserva;
@@ -98,13 +97,11 @@ public partial class FrmPagos : Form, IRefrescable
     {
         try
         {
-            // Solo las señadas tienen saldo pendiente
-            var filtro = new ReservaFiltro { Dni = _cliente.Dni, Estado = EstadosReserva.Senado };
+            var filtro = new ReservaFiltro { Dni = _cliente.Dni, SoloConSaldo = true };
             dgvReservas.DataSource = _reservaNegocio.Listar(filtro);
             Grillas.Formato(dgvReservas, "C2", "Importe", "TotalPagado", "Saldo");
             Grillas.Formato(dgvReservas, "dd/MM/yyyy", "Fecha");
 
-            // La deuda se relee para que refleje el último pago
             _cliente = _clienteNegocio.BuscarPorDni(_cliente.Dni);
             if (_cliente == null)
                 return;
@@ -173,7 +170,6 @@ public partial class FrmPagos : Form, IRefrescable
                 : $"Pago registrado. Saldo pendiente: {saldoRestante:C2}.");
             FrmPrincipal.ActualizarPantallas();
 
-            // Si se abrió como diálogo no es hijo del principal, así que se recarga a mano
             if (MdiParent == null)
                 Refrescar();
         }
@@ -181,10 +177,5 @@ public partial class FrmPagos : Form, IRefrescable
         {
             Mensajes.Error(ex);
         }
-    }
-
-    private void txtDni_TextChanged(object sender, EventArgs e)
-    {
-
     }
 }

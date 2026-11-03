@@ -21,7 +21,6 @@ public class PagoNegocio
         return _pagoDatos.Listar(dni, desde, hasta);
     }
 
-    // Devuelve el saldo que queda después del pago
     public decimal Registrar(Pago pago)
     {
         ReservaDetalle reserva = _reservaDatos.ObtenerDetalle(pago.IdReserva);
@@ -29,6 +28,8 @@ public class PagoNegocio
             throw new ValidacionException("Seleccioná una reserva.");
         if (reserva.Estado == EstadosReserva.Cancelada)
             throw new ValidacionException("No se pueden registrar pagos en una reserva cancelada.");
+        if (reserva.Estado == EstadosReserva.Ausente)
+            throw new ValidacionException("No se pueden registrar pagos en una reserva marcada como ausente.");
         if (reserva.Saldo <= 0)
             throw new ValidacionException("La reserva ya está paga.");
 
@@ -46,6 +47,55 @@ public class PagoNegocio
         return saldoRestante;
     }
 
+    public void Anular(int idPago)
+    {
+        Pago pago = _pagoDatos.ObtenerPorId(idPago);
+        if (pago == null)
+            throw new ValidacionException("Seleccioná un pago.");
+        if (pago.Anulado)
+            throw new ValidacionException("Ese pago ya está anulado.");
+
+        ReservaDetalle reserva = _reservaDatos.ObtenerDetalle(pago.IdReserva);
+        decimal importe = pago.Tipo == TiposPago.Devolucion ? -pago.Importe : pago.Importe;
+        decimal nuevoTotalPagado = reserva.TotalPagado - importe;
+        if (nuevoTotalPagado < 0)
+            throw new ValidacionException("Primero anulá la devolución de esta reserva.");
+
+        string estado = reserva.Estado;
+        if (estado == EstadosReserva.Pendiente || estado == EstadosReserva.Senado || estado == EstadosReserva.Pagado)
+            estado = nuevoTotalPagado >= reserva.Importe ? EstadosReserva.Pagado
+                   : nuevoTotalPagado == 0 ? EstadosReserva.Pendiente
+                   : EstadosReserva.Senado;
+
+        _pagoDatos.Anular(idPago, pago.IdReserva, estado);
+    }
+
+    public void RegistrarDevolucion(int idReserva, decimal importe, string metodo)
+    {
+        ReservaDetalle reserva = _reservaDatos.ObtenerDetalle(idReserva);
+        if (reserva == null)
+            throw new ValidacionException("La reserva no existe.");
+        if (reserva.Estado != EstadosReserva.Cancelada)
+            throw new ValidacionException("Solo se registran devoluciones de reservas canceladas.");
+        if (reserva.TotalPagado <= 0)
+            throw new ValidacionException("Esa reserva no tiene nada cobrado para devolver.");
+
+        ValidarMetodo(metodo);
+        if (importe <= 0)
+            throw new ValidacionException("El importe debe ser mayor a cero.");
+        if (importe > reserva.TotalPagado)
+            throw new ValidacionException($"No se puede devolver más de lo cobrado ({reserva.TotalPagado:C2}).");
+
+        var devolucion = new Pago
+        {
+            IdReserva = idReserva,
+            FechaPago = DateTime.Today,
+            Importe = importe,
+            MetodoPago = metodo,
+            Tipo = TiposPago.Devolucion
+        };
+        _pagoDatos.Registrar(devolucion, EstadosReserva.Cancelada);
+    }
     public static void ValidarMetodo(string metodo)
     {
         if (!MetodosPago.Todos.Contains(metodo))

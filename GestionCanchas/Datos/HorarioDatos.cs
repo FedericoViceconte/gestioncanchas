@@ -22,7 +22,6 @@ public class HorarioDatos
         return Leer(comando).FirstOrDefault();
     }
 
-    // Horarios sin reserva activa para esa cancha y fecha; idReservaExcluida sirve al modificar una reserva
     public List<Horario> ListarLibres(int idCancha, DateTime fecha, int idReservaExcluida)
     {
         using SqlConnection conexion = Conexion.Abrir();

@@ -44,6 +44,11 @@ public partial class FrmClientes : Form, IRefrescable
         CargarEnFormulario(cliente);
     }
 
+    private void dgvClientes_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+    {
+        if (dgvClientes.Rows[e.RowIndex].DataBoundItem is Cliente cliente && cliente.Deuda > 0)
+            e.CellStyle.ForeColor = Color.Firebrick;
+    }
     private void CargarEnFormulario(Cliente cliente)
     {
         _idSeleccionado = cliente.IdCliente;
@@ -117,15 +122,16 @@ public partial class FrmClientes : Form, IRefrescable
     {
         try
         {
-            Cliente cliente = _negocio.BuscarPorDni(txtBuscarDni.Text);
-            if (cliente == null)
+            List<Cliente> clientes = _negocio.Buscar(txtBuscarDni.Text);
+            if (clientes.Count == 0)
             {
-                Mensajes.Info("No hay ningún cliente con ese DNI.");
+                Mensajes.Info("No se encontró ningún cliente con esos datos.");
                 return;
             }
 
-            MostrarEnGrilla(new List<Cliente> { cliente });
-            CargarEnFormulario(cliente);
+            MostrarEnGrilla(clientes);
+            if (clientes.Count == 1)
+                CargarEnFormulario(clientes[0]);
         }
         catch (Exception ex)
         {

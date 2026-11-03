@@ -2,7 +2,6 @@ using System.ComponentModel;
 
 namespace GestionCanchas.Entidades;
 
-// Reserva con los datos relacionados y el saldo, para mostrar en grillas
 public class ReservaDetalle
 {
     [DisplayName("N°")]

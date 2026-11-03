@@ -19,6 +19,5 @@ public class Cancha
 
     public static string Describir(int numero, string tipo) => $"Cancha {numero} - {tipo}";
 
-    // Los ComboBox muestran ToString() cuando no se define DisplayMember
     public override string ToString() => Describir(Numero, Tipo);
 }

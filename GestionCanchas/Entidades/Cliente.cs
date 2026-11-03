@@ -17,7 +17,6 @@ public class Cliente
     [DisplayName("Teléfono")]
     public string Telefono { get; set; }
 
-    // Viene de la vista vw_DeudaClientes, no se guarda en la tabla
     public decimal Deuda { get; set; }
 
     [Browsable(false)]

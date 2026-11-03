@@ -28,6 +28,17 @@ public class ClienteDatos
         return Leer(comando).FirstOrDefault();
     }
 
+    public List<Cliente> Buscar(string texto)
+    {
+        using SqlConnection conexion = Conexion.Abrir();
+        using var comando = new SqlCommand(SelectBase +
+            @" WHERE DNI LIKE @texto OR Nombre LIKE @texto OR Apellido LIKE @texto OR Telefono LIKE @texto
+                  OR (Nombre + ' ' + Apellido) LIKE @texto OR (Apellido + ' ' + Nombre) LIKE @texto
+               ORDER BY Apellido, Nombre", conexion);
+        comando.Parameters.AddWithValue("@texto", "%" + texto + "%");
+        return Leer(comando);
+    }
+
     public Cliente ObtenerPorId(int idCliente)
     {
         using SqlConnection conexion = Conexion.Abrir();

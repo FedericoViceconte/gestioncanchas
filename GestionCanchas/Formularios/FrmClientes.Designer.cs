@@ -147,23 +147,24 @@ partial class FrmClientes
         grpConsulta.Size = new Size(876, 62);
         grpConsulta.TabIndex = 1;
         grpConsulta.TabStop = false;
-        grpConsulta.Text = "Consultar por DNI";
+        grpConsulta.Text = "Buscar cliente";
 
         lblBuscarDni.AutoSize = true;
         lblBuscarDni.Location = new Point(15, 28);
         lblBuscarDni.Name = "lblBuscarDni";
-        lblBuscarDni.Size = new Size(30, 15);
+        lblBuscarDni.Size = new Size(45, 15);
         lblBuscarDni.TabIndex = 0;
-        lblBuscarDni.Text = "DNI:";
+        lblBuscarDni.Text = "Buscar:";
 
-        txtBuscarDni.Location = new Point(90, 25);
-        txtBuscarDni.MaxLength = 8;
+        txtBuscarDni.Location = new Point(70, 25);
+        txtBuscarDni.MaxLength = 50;
         txtBuscarDni.Name = "txtBuscarDni";
-        txtBuscarDni.Size = new Size(120, 23);
+        txtBuscarDni.PlaceholderText = "DNI, nombre, apellido o teléfono";
+        txtBuscarDni.Size = new Size(220, 23);
         txtBuscarDni.TabIndex = 1;
         txtBuscarDni.KeyDown += txtBuscarDni_KeyDown;
 
-        btnBuscar.Location = new Point(220, 22);
+        btnBuscar.Location = new Point(300, 22);
         btnBuscar.Name = "btnBuscar";
         btnBuscar.Size = new Size(90, 28);
         btnBuscar.TabIndex = 2;
@@ -171,7 +172,7 @@ partial class FrmClientes
         btnBuscar.UseVisualStyleBackColor = true;
         btnBuscar.Click += btnBuscar_Click;
 
-        btnMostrarTodos.Location = new Point(320, 22);
+        btnMostrarTodos.Location = new Point(400, 22);
         btnMostrarTodos.Name = "btnMostrarTodos";
         btnMostrarTodos.Size = new Size(110, 28);
         btnMostrarTodos.TabIndex = 3;
@@ -180,7 +181,7 @@ partial class FrmClientes
         btnMostrarTodos.Click += btnMostrarTodos_Click;
 
         chkSoloDeuda.AutoSize = true;
-        chkSoloDeuda.Location = new Point(450, 27);
+        chkSoloDeuda.Location = new Point(530, 27);
         chkSoloDeuda.Name = "chkSoloDeuda";
         chkSoloDeuda.Size = new Size(155, 19);
         chkSoloDeuda.TabIndex = 4;
@@ -195,6 +196,7 @@ partial class FrmClientes
         dgvClientes.Size = new Size(876, 348);
         dgvClientes.TabIndex = 2;
         dgvClientes.CellClick += dgvClientes_CellClick;
+        dgvClientes.CellFormatting += dgvClientes_CellFormatting;
 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;

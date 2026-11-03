@@ -3,7 +3,6 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-// Alta y modificación de reservas. En modificación no se toca la seña: los pagos van por FrmPagos
 public partial class FrmReserva : Form
 {
     private readonly ReservaNegocio _reservaNegocio = new ReservaNegocio();
@@ -122,7 +121,6 @@ public partial class FrmReserva : Form
         btnBuscarCliente.PerformClick();
     }
 
-    // Si cambian el DNI después de buscar, el cliente encontrado deja de valer
     private void txtDni_TextChanged(object sender, EventArgs e)
     {
         if (_cliente == null || txtDni.Text.Trim() == _cliente.Dni)

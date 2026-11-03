@@ -14,7 +14,6 @@ public class HorarioNegocio
         if (horario.HoraFin <= horario.HoraInicio)
             throw new ValidacionException("La hora de fin debe ser posterior a la de inicio.");
 
-        // Si dos horarios se pisan, se podría alquilar la misma cancha dos veces en el mismo momento
         if (_datos.SeSuperpone(horario.HoraInicio, horario.HoraFin))
             throw new ValidacionException("El horario se superpone con otro ya cargado.");
 

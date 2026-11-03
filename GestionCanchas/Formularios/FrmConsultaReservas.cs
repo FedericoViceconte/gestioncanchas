@@ -94,6 +94,12 @@ public partial class FrmConsultaReservas : Form, IRefrescable
             case EstadosReserva.Cancelada:
                 e.CellStyle.ForeColor = Color.Gray;
                 break;
+            case EstadosReserva.Pendiente:
+                e.CellStyle.ForeColor = Color.SteelBlue;
+                break;
+            case EstadosReserva.Ausente:
+                e.CellStyle.ForeColor = Color.Firebrick;
+                break;
             case EstadosReserva.Senado:
                 e.CellStyle.ForeColor = Color.DarkOrange;
                 break;
@@ -149,6 +155,9 @@ public partial class FrmConsultaReservas : Form, IRefrescable
         try
         {
             _reservaNegocio.Cancelar(reserva.IdReserva);
+            if (reserva.TotalPagado > 0 &&
+                Mensajes.Confirmar($"La reserva tenía {reserva.TotalPagado:C2} cobrados. ¿Registrar la devolución ahora?"))
+                AbrirDevolucion(reserva.IdReserva);
             FrmPrincipal.ActualizarPantallas();
         }
         catch (Exception ex)
@@ -157,14 +166,88 @@ public partial class FrmConsultaReservas : Form, IRefrescable
         }
     }
 
+    private void btnAusente_Click(object sender, EventArgs e)
+    {
+        ReservaDetalle reserva = ObtenerSeleccionada();
+        if (reserva == null)
+            return;
+
+        string pregunta = $"¿Marcar que {reserva.Cliente} no se presentó a la reserva N° {reserva.IdReserva} " +
+                          $"({reserva.Fecha:dd/MM/yyyy}, {reserva.Horario})?\n\nLo pagado no se devuelve y el saldo deja de figurar como deuda.";
+        if (!Mensajes.Confirmar(pregunta))
+            return;
+
+        try
+        {
+            _reservaNegocio.MarcarAusente(reserva.IdReserva);
+            FrmPrincipal.ActualizarPantallas();
+        }
+        catch (Exception ex)
+        {
+            Mensajes.Error(ex);
+        }
+    }
+    private void btnAnularPago_Click(object sender, EventArgs e)
+    {
+        Pago pago = Grillas.Seleccionado<Pago>(dgvPagos);
+        if (pago == null)
+        {
+            Mensajes.Info("Seleccioná un pago en la grilla de pagos de abajo.");
+            return;
+        }
+
+        string pregunta = $"¿Anular el movimiento N° {pago.IdPago} ({pago.Tipo}) de {pago.Importe:C2}?\n\n" +
+                          "No se borra: queda registrado como anulado y deja de sumar.";
+        if (!Mensajes.Confirmar(pregunta))
+            return;
+
+        try
+        {
+            _pagoNegocio.Anular(pago.IdPago);
+            FrmPrincipal.ActualizarPantallas();
+        }
+        catch (Exception ex)
+        {
+            Mensajes.Error(ex);
+        }
+    }
+
+    private void btnDevolucion_Click(object sender, EventArgs e)
+    {
+        ReservaDetalle reserva = ObtenerSeleccionada();
+        if (reserva == null)
+            return;
+        if (reserva.Estado != EstadosReserva.Cancelada)
+        {
+            Mensajes.Info("Las devoluciones se registran sobre reservas canceladas.");
+            return;
+        }
+
+        AbrirDevolucion(reserva.IdReserva);
+    }
+
+    private void AbrirDevolucion(int idReserva)
+    {
+        try
+        {
+            ReservaDetalle reserva = _reservaNegocio.ObtenerDetalle(idReserva);
+            using var formulario = new FrmDevolucion(reserva);
+            formulario.ShowDialog(this);
+            FrmPrincipal.ActualizarPantallas();
+        }
+        catch (Exception ex)
+        {
+            Mensajes.Error(ex);
+        }
+    }
     private void btnRegistrarPago_Click(object sender, EventArgs e)
     {
         ReservaDetalle reserva = ObtenerSeleccionada();
         if (reserva == null)
             return;
-        if (reserva.Estado != EstadosReserva.Senado)
+        if (reserva.Estado != EstadosReserva.Senado && reserva.Estado != EstadosReserva.Pendiente)
         {
-            Mensajes.Info("Solo se registran pagos en reservas señadas con saldo pendiente.");
+            Mensajes.Info("Solo se registran pagos en reservas pendientes o señadas con saldo.");
             return;
         }
 

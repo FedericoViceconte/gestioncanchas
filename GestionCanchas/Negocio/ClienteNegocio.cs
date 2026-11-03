@@ -18,6 +18,15 @@ public class ClienteNegocio
         return _datos.BuscarPorDni(dni);
     }
 
+    public List<Cliente> Buscar(string texto)
+    {
+        texto = texto?.Trim();
+        if (string.IsNullOrEmpty(texto) || texto.Length < 2)
+            throw new ValidacionException("Escribí al menos 2 letras o números del DNI, nombre, apellido o teléfono.");
+
+        return _datos.Buscar(texto);
+    }
+
     public void Guardar(Cliente cliente)
     {
         Validar(cliente);

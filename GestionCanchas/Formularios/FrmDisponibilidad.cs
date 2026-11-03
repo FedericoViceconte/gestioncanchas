@@ -3,7 +3,6 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-// Grilla de horarios x canchas para una fecha. Doble clic en un turno libre abre la reserva
 public partial class FrmDisponibilidad : Form, IRefrescable
 {
     private const string TextoLibre = "Libre";
@@ -68,7 +67,13 @@ public partial class FrmDisponibilidad : Form, IRefrescable
     {
         if (turno != null)
         {
-            celda.Value = turno.Estado == EstadosReserva.Senado ? $"{turno.Cliente} (señado)" : turno.Cliente;
+            celda.Value = turno.Estado switch
+            {
+                EstadosReserva.Senado => $"{turno.Cliente} (señado)",
+                EstadosReserva.Pendiente => $"{turno.Cliente} (fijo)",
+                EstadosReserva.Ausente =>$"{turno.Cliente} (no vino)",
+                _ => turno.Cliente
+            };
             celda.Style.BackColor = Color.MistyRose;
             return;
         }

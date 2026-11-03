@@ -26,7 +26,6 @@ CREATE TABLE CLIENTES (
     Telefono  VARCHAR(20) NULL,
     CONSTRAINT PK_CLIENTES PRIMARY KEY (IdCliente),
     CONSTRAINT UQ_CLIENTES_DNI UNIQUE (DNI),
-    -- DNI solo numérico, 7 u 8 dígitos
     CONSTRAINT CK_CLIENTES_DNI CHECK (DNI NOT LIKE '%[^0-9]%' AND LEN(DNI) BETWEEN 7 AND 8)
 );
 GO
@@ -68,11 +67,29 @@ CREATE TABLE RESERVAS (
     CONSTRAINT FK_RESERVAS_CANCHAS  FOREIGN KEY (IdCancha)  REFERENCES CANCHAS (IdCancha),
     CONSTRAINT FK_RESERVAS_HORARIOS FOREIGN KEY (IdHorario) REFERENCES HORARIOS (IdHorario),
     CONSTRAINT CK_RESERVAS_Importe CHECK (Importe > 0),
-    CONSTRAINT CK_RESERVAS_Estado CHECK (Estado IN ('Señado', 'Pagado', 'Cancelada'))
+    CONSTRAINT CK_RESERVAS_Estado CHECK (Estado IN ('Pendiente', 'Señado', 'Pagado', 'Cancelada', 'Ausente'))
 );
 GO
 
--- Una cancelada libera el turno; el resto no puede repetir cancha + fecha + horario
+CREATE TABLE TURNOS_FIJOS (
+    IdTurnoFijo INT IDENTITY(1,1) NOT NULL,
+    IdCliente   INT     NOT NULL,
+    IdCancha    INT     NOT NULL,
+    IdHorario   INT     NOT NULL,
+    DiaSemana   TINYINT NOT NULL,
+    Activo      BIT     NOT NULL CONSTRAINT DF_TURNOS_FIJOS_Activo DEFAULT 1,
+    CONSTRAINT PK_TURNOS_FIJOS PRIMARY KEY (IdTurnoFijo),
+    CONSTRAINT FK_TURNOS_FIJOS_CLIENTES FOREIGN KEY (IdCliente) REFERENCES CLIENTES (IdCliente),
+    CONSTRAINT FK_TURNOS_FIJOS_CANCHAS  FOREIGN KEY (IdCancha)  REFERENCES CANCHAS (IdCancha),
+    CONSTRAINT FK_TURNOS_FIJOS_HORARIOS FOREIGN KEY (IdHorario) REFERENCES HORARIOS (IdHorario),
+    CONSTRAINT CK_TURNOS_FIJOS_Dia CHECK (DiaSemana BETWEEN 0 AND 6)
+);
+GO
+
+ALTER TABLE RESERVAS ADD IdTurnoFijo INT NULL
+    CONSTRAINT FK_RESERVAS_TURNOS_FIJOS FOREIGN KEY REFERENCES TURNOS_FIJOS (IdTurnoFijo);
+GO
+
 CREATE UNIQUE INDEX UX_RESERVAS_Turno
     ON RESERVAS (IdCancha, Fecha, IdHorario)
     WHERE Estado <> 'Cancelada';
@@ -84,10 +101,13 @@ CREATE TABLE PAGOS (
     FechaPago  DATE          NOT NULL CONSTRAINT DF_PAGOS_FechaPago DEFAULT CAST(GETDATE() AS DATE),
     Importe    DECIMAL(10,2) NOT NULL,
     MetodoPago VARCHAR(20)   NOT NULL,
+    Tipo       VARCHAR(15)   NOT NULL CONSTRAINT DF_PAGOS_Tipo DEFAULT 'Pago',
+    Anulado    BIT           NOT NULL CONSTRAINT DF_PAGOS_Anulado DEFAULT 0,
     CONSTRAINT PK_PAGOS PRIMARY KEY (IdPago),
     CONSTRAINT FK_PAGOS_RESERVAS FOREIGN KEY (IdReserva) REFERENCES RESERVAS (IdReserva),
     CONSTRAINT CK_PAGOS_Importe CHECK (Importe > 0),
-    CONSTRAINT CK_PAGOS_MetodoPago CHECK (MetodoPago IN ('Efectivo', 'Transferencia', 'Tarjeta'))
+    CONSTRAINT CK_PAGOS_MetodoPago CHECK (MetodoPago IN ('Efectivo', 'Transferencia', 'Tarjeta')),
+    CONSTRAINT CK_PAGOS_Tipo CHECK (Tipo IN ('Pago', 'Devolución'))
 );
 GO
 
@@ -102,12 +122,13 @@ SELECT r.IdReserva,
        ISNULL(p.TotalPagado, 0)             AS TotalPagado,
        r.Importe - ISNULL(p.TotalPagado, 0) AS Saldo
 FROM RESERVAS r
-LEFT JOIN (SELECT IdReserva, SUM(Importe) AS TotalPagado
+LEFT JOIN (SELECT IdReserva,
+                  SUM(CASE WHEN Tipo = 'Devolución' THEN -Importe ELSE Importe END) AS TotalPagado
            FROM PAGOS
+           WHERE Anulado = 0
            GROUP BY IdReserva) p ON p.IdReserva = r.IdReserva;
 GO
 
--- Las canceladas no generan deuda aunque tengan seña
 CREATE VIEW vw_DeudaClientes AS
 SELECT c.IdCliente,
        c.DNI,
@@ -117,11 +138,10 @@ SELECT c.IdCliente,
        ISNULL(SUM(s.Saldo), 0) AS Deuda
 FROM CLIENTES c
 LEFT JOIN vw_SaldoReservas s ON s.IdCliente = c.IdCliente
-                            AND s.Estado <> 'Cancelada'
+                            AND s.Estado NOT IN ('Cancelada', 'Ausente')
+                            AND NOT (s.Estado = 'Pendiente' AND s.Fecha > CAST(GETDATE() AS DATE))
 GROUP BY c.IdCliente, c.DNI, c.Nombre, c.Apellido, c.Telefono;
 GO
-
--- Datos iniciales
 
 INSERT INTO CLIENTES (DNI, Nombre, Apellido, Telefono) VALUES
 ('45123456', 'Juan',  'Pérez',     '1122334455'),
@@ -134,7 +154,6 @@ INSERT INTO CANCHAS (Numero, Tipo, PrecioHora, Estado) VALUES
 (3, 'Fútbol 7',  45000.00, 'Disponible'),
 (4, 'Fútbol 11', 70000.00, 'Mantenimiento');
 
--- Turnos de una hora, de 08:00 a 23:00
 DECLARE @hora INT = 8;
 WHILE @hora < 23
 BEGIN
@@ -143,7 +162,6 @@ BEGIN
     SET @hora += 1;
 END
 
--- Reservas de prueba con fechas relativas a hoy, para que la disponibilidad se vea en la demo
 DECLARE @hoy DATE = CAST(GETDATE() AS DATE);
 DECLARE @h18 INT = (SELECT IdHorario FROM HORARIOS WHERE HoraInicio = '18:00');
 DECLARE @h19 INT = (SELECT IdHorario FROM HORARIOS WHERE HoraInicio = '19:00');

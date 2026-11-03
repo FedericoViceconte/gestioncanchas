@@ -104,9 +104,4 @@ public partial class FrmCanchas : Form, IRefrescable
             Mensajes.Error(ex);
         }
     }
-
-    private void nudNumero_ValueChanged(object sender, EventArgs e)
-    {
-
-    }
 }

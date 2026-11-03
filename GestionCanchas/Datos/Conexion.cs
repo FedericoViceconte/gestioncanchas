@@ -4,7 +4,6 @@ namespace GestionCanchas.Datos;
 
 public static class Conexion
 {
-    // Si la instancia de LocalDB tiene otro nombre, se cambia solo acá
     private const string Cadena =
         @"Server=(localdb)\MSSQLLocalDB;Database=GestionCanchas;Integrated Security=True;TrustServerCertificate=True";
 
