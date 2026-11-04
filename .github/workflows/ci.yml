@@ -1,0 +1,26 @@
+# Builds the Windows Forms application and runs the business-rule tests on every push and pull request.
+name: Compilación y pruebas
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Restaurar paquetes
+        run: dotnet restore GestionCanchas.slnx
+      - name: Compilar
+        run: dotnet build GestionCanchas.slnx --configuration Release --no-restore
+      - name: Pruebas
+        run: dotnet test GestionCanchas.slnx --configuration Release --no-build --logger "console;verbosity=normal"
