@@ -1,0 +1,22 @@
+Gestión de Canchas de Fútbol — componentes de terceros
+
+© 2026 Federico Viceconte. Todos los derechos reservados.
+El aviso COPYRIGHT.txt detalla los derechos del contenido original.
+
+Dependencias:
+
+- Microsoft.Data.SqlClient 6.0.2: MIT. Se restaura desde NuGet al compilar.
+  https://github.com/dotnet/SqlClient
+- .NET 10 y Windows Forms: MIT.
+  https://github.com/dotnet/runtime
+  https://github.com/dotnet/winforms
+
+Requisitos que no se distribuyen con el proyecto:
+
+- SQL Server Express LocalDB: software de Microsoft con su propia licencia. Se
+  instala aparte, con la carga de trabajo «Almacenamiento y procesamiento de
+  datos» de Visual Studio.
+- Visual Studio: software de Microsoft con su propia licencia.
+
+Las imágenes de terceros incluidas en el repositorio conservan los derechos de sus
+autores y no forman parte del contenido original cubierto por COPYRIGHT.txt.

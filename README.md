@@ -34,4 +34,6 @@ Si la instancia de LocalDB tiene otro nombre, se cambia la cadena en `Datos/Cone
 - La deuda del cliente se calcula con la vista `vw_DeudaClientes`.
 - Transacciones: alta de reserva con su seña (`ReservaDatos.InsertarConSena`) y registro de pago con actualización de estado (`PagoDatos.Registrar`).
 
-© 2026. Todos los derechos reservados.
+## Licencia
+
+© 2026 Federico Viceconte. Todos los derechos reservados: ver [COPYRIGHT.txt](COPYRIGHT.txt). Las bibliotecas de terceros conservan sus licencias, detalladas en [LICENCIAS.txt](LICENCIAS.txt).
