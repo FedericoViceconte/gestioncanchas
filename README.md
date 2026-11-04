@@ -9,6 +9,7 @@ fijos, señas, pagos y devoluciones.
 ![Windows Forms](https://img.shields.io/badge/Windows_Forms-escritorio-0078D4?logo=windows&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL_Server-LocalDB-CC2927?logo=microsoftsqlserver&logoColor=white)
 ![ADO.NET](https://img.shields.io/badge/ADO.NET-Microsoft.Data.SqlClient-5C2D91)
+[![Compilación y pruebas](https://github.com/federicoviceconte5-jpg/gestioncanchas/actions/workflows/ci.yml/badge.svg)](https://github.com/federicoviceconte5-jpg/gestioncanchas/actions/workflows/ci.yml)
 
 </div>
 
@@ -20,6 +21,7 @@ fijos, señas, pagos y devoluciones.
 - [Arquitectura](#arquitectura)
 - [Modelo de datos](#modelo-de-datos)
 - [Puesta en marcha](#puesta-en-marcha)
+- [Pruebas](#pruebas)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Licencia](#licencia)
 
@@ -164,6 +166,19 @@ erDiagram
 
 Si tu instancia de LocalDB tiene otro nombre, cambiá la cadena de conexión en `Datos/Conexion.cs`.
 
+## Pruebas
+
+El proyecto `GestionCanchas.Tests` tiene **34 pruebas con xUnit** sobre las reglas de negocio:
+validación del DNI y de los datos de clientes, canchas y horarios, la seña mínima del 15 %, el
+cálculo del importe y los métodos de pago. Todas se resuelven antes de llegar a la base, así que
+no necesitan SQL Server.
+
+```sh
+dotnet test GestionCanchas.slnx
+```
+
+GitHub Actions compila la solución y corre las pruebas en Windows en cada cambio.
+
 ## Estructura del proyecto
 
 ```text
@@ -174,6 +189,7 @@ GestionCanchas/
 ├── Formularios/   # pantallas, grillas reutilizables y mensajes
 ├── Scripts/       # GestionCanchas.sql: tablas, restricciones, vistas y datos de prueba
 └── Program.cs
+GestionCanchas.Tests/   # pruebas de las reglas de negocio con xUnit
 ```
 
 ## Licencia
