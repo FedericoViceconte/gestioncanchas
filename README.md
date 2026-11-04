@@ -9,7 +9,7 @@ fijos, señas, pagos y devoluciones.
 ![Windows Forms](https://img.shields.io/badge/Windows_Forms-escritorio-0078D4?logo=windows&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL_Server-LocalDB-CC2927?logo=microsoftsqlserver&logoColor=white)
 ![ADO.NET](https://img.shields.io/badge/ADO.NET-Microsoft.Data.SqlClient-5C2D91)
-[![Compilación y pruebas](https://github.com/federicoviceconte5-jpg/gestioncanchas/actions/workflows/ci.yml/badge.svg)](https://github.com/federicoviceconte5-jpg/gestioncanchas/actions/workflows/ci.yml)
+[![Compilación y pruebas](https://github.com/FedericoViceconte/gestioncanchas/actions/workflows/ci.yml/badge.svg)](https://github.com/FedericoViceconte/gestioncanchas/actions/workflows/ci.yml)
 
 </div>
 
