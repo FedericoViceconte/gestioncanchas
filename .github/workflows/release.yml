@@ -1,0 +1,53 @@
+# Publishes a self-contained Windows executable as a GitHub release when a version tag (v1.2.3) is pushed.
+name: Publicar versión
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    name: Ejecutable para Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+      - name: Iniciar SQL Server LocalDB
+        shell: pwsh
+        run: |
+          sqllocaldb info MSSQLLocalDB *> $null
+          if ($LASTEXITCODE -ne 0) { sqllocaldb create MSSQLLocalDB }
+          sqllocaldb start MSSQLLocalDB
+      - name: Pruebas
+        run: dotnet test GestionCanchas.slnx --configuration Release
+      - name: Publicar
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          dotnet publish GestionCanchas/GestionCanchas.csproj --configuration Release --runtime win-x64 `
+            --self-contained true --output publicar `
+            -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:EnableCompressionInSingleFile=true -p:DebugType=none -p:Version=$version
+          Copy-Item COPYRIGHT.txt, LICENCIAS.txt publicar/
+          Compress-Archive -Path publicar/* -DestinationPath "GestionCanchas-${{ github.ref_name }}-win-x64.zip"
+      - name: Crear la versión en GitHub
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $notas = @"
+          Ejecutable para Windows 10 y 11 (64 bits). No hace falta instalar .NET.
+
+          1. Instalá SQL Server Express LocalDB si no lo tenés: viene con Visual Studio o se descarga gratis de Microsoft.
+          2. Descomprimí el zip y abrí GestionCanchas.exe.
+          3. La primera vez, la aplicación crea la base con datos de ejemplo y te pide crear la cuenta de administrador.
+
+          Para usar otro servidor de SQL Server, cambiá la cadena de conexión en appsettings.json.
+          "@
+          gh release create "${{ github.ref_name }}" "GestionCanchas-${{ github.ref_name }}-win-x64.zip" `
+            --title "Gestión de Canchas ${{ github.ref_name }}" --notes $notas

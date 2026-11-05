@@ -1,52 +1,98 @@
 <div align="center">
 
-# ⚽ Gestión de Canchas de Fútbol
+<img src="GestionCanchas/Recursos/GestionCanchas.png" alt="Logo de Gestión de Canchas" width="96" height="96">
 
-**Aplicación de escritorio para administrar un complejo de canchas**: clientes, reservas, turnos
-fijos, señas, pagos y devoluciones.
+# Gestión de Canchas
+
+**Aplicación de escritorio para administrar un complejo de fútbol**: reservas con seña, turnos fijos,
+cobros, caja diaria y usuarios con roles.
 
 ![C#](https://img.shields.io/badge/C%23-.NET_10-512BD4?logo=dotnet&logoColor=white)
 ![Windows Forms](https://img.shields.io/badge/Windows_Forms-escritorio-0078D4?logo=windows&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL_Server-LocalDB-CC2927?logo=microsoftsqlserver&logoColor=white)
 ![ADO.NET](https://img.shields.io/badge/ADO.NET-Microsoft.Data.SqlClient-5C2D91)
 [![Compilación y pruebas](https://github.com/FedericoViceconte/gestioncanchas/actions/workflows/ci.yml/badge.svg)](https://github.com/FedericoViceconte/gestioncanchas/actions/workflows/ci.yml)
+[![Última versión](https://img.shields.io/github/v/release/FedericoViceconte/gestioncanchas?label=versi%C3%B3n)](https://github.com/FedericoViceconte/gestioncanchas/releases/latest)
+
+### [Descargar para Windows](https://github.com/FedericoViceconte/gestioncanchas/releases/latest)
+
+<img src="docs/capturas/inicio.png" alt="Panel de inicio con indicadores del día, turnos de hoy, cobros de los últimos 7 días y clientes con deuda" width="900">
 
 </div>
+
+> **In English:** Windows desktop app (C#, .NET 10, Windows Forms, SQL Server) to run a football pitch rental
+> business: bookings with deposits, recurring weekly slots, payments and refunds, cash reports and user accounts
+> with roles. Layered architecture, ADO.NET with parameterized queries, PBKDF2 password hashing, and 72 automated
+> tests (unit and SQL Server LocalDB integration) running on GitHub Actions. A self-contained `.exe` is published
+> on every release.
 
 ## Índice
 
 - [Sobre el proyecto](#sobre-el-proyecto)
+- [Capturas](#capturas)
 - [Funciones](#funciones)
+- [Usuarios y permisos](#usuarios-y-permisos)
 - [Reglas de negocio](#reglas-de-negocio)
+- [Seguridad](#seguridad)
 - [Arquitectura](#arquitectura)
 - [Modelo de datos](#modelo-de-datos)
-- [Puesta en marcha](#puesta-en-marcha)
+- [Descargar y usar](#descargar-y-usar)
+- [Desarrollo](#desarrollo)
 - [Pruebas](#pruebas)
 - [Estructura del proyecto](#estructura-del-proyecto)
 - [Licencia](#licencia)
 
 ## Sobre el proyecto
 
-Proyecto final de **Programación Orientada a Objetos**. Es una aplicación Windows Forms en C#
-(.NET 10) con base de datos SQL Server LocalDB, organizada en capas: entidades, acceso a datos,
-reglas de negocio y formularios.
+Nació como proyecto final de **Programación Orientada a Objetos**: una aplicación Windows Forms en C# (.NET 10)
+con SQL Server, organizada en capas de entidades, acceso a datos, reglas de negocio y formularios.
 
-Cubre el trabajo diario de un complejo de fútbol: registrar clientes y canchas, tomar reservas con
-seña, consultar la disponibilidad del día, cobrar, devolver dinero y llevar la deuda de cada cliente.
+Cubre el trabajo diario de un complejo de fútbol: registrar clientes y canchas, tomar reservas con seña, ver la
+disponibilidad del día, cobrar, devolver dinero, cerrar la caja y saber cuánto debe cada cliente.
+
+La versión 2 suma inicio de sesión con roles, un panel de inicio con indicadores, la caja por período,
+exportación a Excel, una interfaz renovada y la creación automática de la base de datos.
+
+## Capturas
+
+| Inicio de sesión | Disponibilidad |
+| --- | --- |
+| <img src="docs/capturas/login.png" alt="Pantalla de inicio de sesión" width="440"> | <img src="docs/capturas/disponibilidad.png" alt="Grilla de disponibilidad por cancha y horario" width="440"> |
+| **Reservas** | **Caja** |
+| <img src="docs/capturas/reservas.png" alt="Consulta de reservas con filtros, acciones y pagos" width="440"> | <img src="docs/capturas/caja.png" alt="Caja del día por método de pago y por usuario" width="440"> |
+| **Usuarios** | |
+| <img src="docs/capturas/usuarios.png" alt="Administración de usuarios y roles" width="440"> | |
 
 ## Funciones
 
 | Módulo | Qué permite |
 | --- | --- |
-| **Resumen del día** | Turnos de hoy y clientes con deuda, al abrir la aplicación |
-| **Clientes** | Alta, edición, baja y búsqueda por DNI, nombre, apellido o teléfono |
-| **Canchas** | Número, tipo, precio por hora y estado (disponible o en mantenimiento) |
-| **Horarios** | Franjas horarias sin superposición; por defecto, de 8 a 23 h |
-| **Reservas** | Alta con seña, modificación, cancelación y marca de ausente |
+| **Inicio** | Turnos y ocupación del día, cobrado hoy y en el mes, deuda total, gráfico de los últimos 7 días y clientes con deuda |
 | **Disponibilidad** | Grilla de canchas por horario para cualquier fecha; doble clic en un turno libre para reservarlo |
+| **Reservas** | Alta con seña, modificación, cancelación, marca de ausente, pagos y devoluciones; filtros por fecha, DNI, cancha y estado |
 | **Turnos fijos** | Reservas semanales para un mismo cliente, cancha, día y horario, de 1 a 26 semanas |
-| **Pagos** | Pagos en efectivo, transferencia o tarjeta, anulaciones y devoluciones |
-| **Consultas** | Reservas por fecha, DNI, cancha, estado o solo con saldo; pagos por DNI y rango de fechas |
+| **Pagos** | Cobro de señas y saldos en efectivo, transferencia o tarjeta, con el usuario que registró cada uno |
+| **Caja** | Cobrado, devuelto y neto de un día, una semana, un mes o cualquier período, por método de pago y por usuario |
+| **Clientes** | Alta, edición, baja y búsqueda por DNI, nombre, apellido o teléfono, con la deuda de cada uno |
+| **Canchas y horarios** | Número, tipo, precio por hora y estado de cada cancha; franjas horarias sin superposición |
+| **Usuarios** | Cuentas de acceso, roles, activación y restablecimiento de contraseñas |
+| **Exportar a Excel** | Reservas, pagos, clientes y movimientos de caja a CSV, con acentos y columnas correctas en Excel |
+
+Atajos: **Ctrl+N** abre una reserva nueva desde cualquier pantalla y **F5** actualiza la pantalla actual.
+
+## Usuarios y permisos
+
+En el primer inicio, la aplicación pide crear la cuenta de administrador. Desde **Usuarios**, el administrador
+crea las cuentas de recepción.
+
+| Acción | Administrador | Recepcionista |
+| --- | :---: | :---: |
+| Reservas, disponibilidad, turnos fijos y clientes | ✓ | ✓ |
+| Cobrar pagos y consultar la caja | ✓ | ✓ |
+| Anular pagos y registrar devoluciones | ✓ | |
+| Canchas, horarios y usuarios | ✓ | |
+
+Los permisos se validan en la capa de negocio, no solo ocultando opciones del menú.
 
 ## Reglas de negocio
 
@@ -63,17 +109,28 @@ también están garantizadas por **restricciones de SQL Server**.
 - **Turnos fijos:** se generan semana a semana; las fechas que ya están ocupadas se omiten y se
   informan.
 - **Pagos y devoluciones:** los pagos se anulan en lugar de borrarse, y solo se puede devolver
-  dinero de una reserva que tiene algo cobrado.
+  dinero de una reserva cancelada que tiene algo cobrado.
 - **Deuda del cliente:** se calcula con las vistas `vw_SaldoReservas` y `vw_DeudaClientes`, sin
   contar reservas canceladas, ausentes ni pendientes de fechas futuras.
+- **Usuarios:** siempre queda al menos un administrador activo, y nadie puede quitarse su propio rol de
+  administrador ni desactivar su usuario.
 - **Integridad:** DNI único de 7 u 8 dígitos y operaciones de varios pasos (reserva con seña, pago
   con cambio de estado, turnos fijos) dentro de **transacciones**.
+
+## Seguridad
+
+- **Contraseñas con hash PBKDF2-HMAC-SHA256**, 600.000 iteraciones y una sal aleatoria por contraseña,
+  comparadas en tiempo constante. Nunca se guardan ni se muestran en texto.
+- **Bloqueo temporal:** después de 5 intentos fallidos, el usuario queda bloqueado un minuto.
+- **Contraseñas razonables:** al menos 8 caracteres, con letras y números, y distintas del usuario.
+- **Consultas parametrizadas** en todo el acceso a datos.
+- **Exportación segura:** los valores que Excel interpretaría como fórmula se exportan como texto.
 
 ## Arquitectura
 
 ```mermaid
 flowchart LR
-    F[Formularios<br>Windows Forms] --> N[Negocio<br>validaciones y reglas]
+    F[Formularios<br>Windows Forms] --> N[Negocio<br>reglas, permisos y sesión]
     N --> D[Datos<br>ADO.NET]
     D --> DB[(SQL Server<br>LocalDB)]
     E[Entidades] -.-> F
@@ -83,10 +140,13 @@ flowchart LR
 
 | Capa | Responsabilidad |
 | --- | --- |
-| `Entidades` | Clases que representan las tablas y los datos que muestran las grillas |
-| `Datos` | Acceso a SQL Server con consultas parametrizadas (una clase por tabla) |
-| `Negocio` | Validaciones y reglas; los errores de usuario se informan con `ValidacionException` |
-| `Formularios` | Pantallas de Windows Forms, grillas y mensajes |
+| `Entidades` | Clases que representan las tablas, los reportes y los datos que muestran las grillas |
+| `Datos` | Acceso a SQL Server con consultas parametrizadas, creación de la base y actualizaciones del esquema |
+| `Negocio` | Validaciones, reglas, permisos por rol, sesión y hash de contraseñas; los errores de usuario se informan con `ValidacionException` |
+| `Formularios` | Pantallas de Windows Forms, tema visual, controles propios (tarjetas, gráfico, menú lateral) y exportación |
+
+Al iniciar, la aplicación verifica la base: si no existe, ofrece crearla con datos de ejemplo
+(`Scripts/GestionCanchas.sql`), y si existe le aplica las actualizaciones pendientes (`Scripts/Actualizaciones.sql`).
 
 ## Modelo de datos
 
@@ -96,6 +156,7 @@ erDiagram
     CANCHAS ||--o{ RESERVAS : recibe
     HORARIOS ||--o{ RESERVAS : ocupa
     RESERVAS ||--o{ PAGOS : registra
+    USUARIOS |o--o{ PAGOS : cobra
     CLIENTES ||--o{ TURNOS_FIJOS : tiene
     CANCHAS ||--o{ TURNOS_FIJOS : asigna
     HORARIOS ||--o{ TURNOS_FIJOS : repite
@@ -141,55 +202,91 @@ erDiagram
     PAGOS {
         int IdPago PK
         int IdReserva FK
+        int IdUsuario FK
         date FechaPago
         decimal Importe
         varchar MetodoPago
         varchar Tipo
         bit Anulado
     }
+    USUARIOS {
+        int IdUsuario PK
+        varchar NombreUsuario UK
+        varchar NombreCompleto
+        varchar ClaveHash
+        varchar Rol
+        bit Activo
+    }
 ```
 
-## Puesta en marcha
+## Descargar y usar
 
-**Requisitos:** Windows y Visual Studio 2026 con estas cargas de trabajo:
+1. Instalá **SQL Server Express LocalDB** si no lo tenés: viene con Visual Studio o se descarga gratis de Microsoft.
+2. Descargá el zip de la [última versión](https://github.com/FedericoViceconte/gestioncanchas/releases/latest),
+   descomprimilo y abrí `GestionCanchas.exe`. No hace falta instalar .NET.
+3. La primera vez, la aplicación crea la base `GestionCanchas` con canchas, horarios y clientes de ejemplo, y te
+   pide crear la cuenta de administrador.
 
-- Desarrollo de escritorio de .NET
-- Almacenamiento y procesamiento de datos (instala SQL Server LocalDB)
+Para usar otro servidor, cambiá la cadena de conexión en `appsettings.json`, junto al ejecutable, o definí la
+variable de entorno `GESTIONCANCHAS_CONEXION`, que tiene prioridad.
 
-**Pasos:**
+## Desarrollo
 
-1. **Crear la base:** en Visual Studio, abrí *Ver › Explorador de objetos de SQL Server*, conectate
-   a `(localdb)\MSSQLLocalDB`, abrí una nueva consulta y ejecutá
-   `GestionCanchas/Scripts/GestionCanchas.sql`. El script crea la base con datos de prueba.
-2. Abrí `GestionCanchas.slnx`.
-3. Ejecutá con **F5**. El paquete NuGet `Microsoft.Data.SqlClient` se restaura solo.
+**Requisitos:** Windows, el SDK de .NET 10 y SQL Server LocalDB. Con Visual Studio 2026 alcanzan las cargas de
+trabajo *Desarrollo de escritorio de .NET* y *Almacenamiento y procesamiento de datos*.
 
-Si tu instancia de LocalDB tiene otro nombre, cambiá la cadena de conexión en `Datos/Conexion.cs`.
+```sh
+dotnet run --project GestionCanchas
+```
+
+También podés abrir `GestionCanchas.slnx` en Visual Studio y ejecutar con **F5**. Si preferís crear la base a
+mano, ejecutá `GestionCanchas/Scripts/GestionCanchas.sql` sobre `(localdb)\MSSQLLocalDB`; la aplicación le
+aplica las actualizaciones al iniciar.
+
+Para publicar una versión, alcanza con subir una etiqueta: GitHub Actions corre las pruebas, genera el
+ejecutable autocontenido y crea la versión con el zip.
+
+```sh
+git tag v2.0.0
+git push origin v2.0.0
+```
 
 ## Pruebas
 
-El proyecto `GestionCanchas.Tests` tiene **34 pruebas con xUnit** sobre las reglas de negocio:
-validación del DNI y de los datos de clientes, canchas y horarios, la seña mínima del 15 %, el
-cálculo del importe y los métodos de pago. Todas se resuelven antes de llegar a la base, así que
-no necesitan SQL Server.
+El proyecto `GestionCanchas.Tests` tiene **72 pruebas con xUnit**:
+
+- **Reglas de negocio** sin base de datos: DNI, clientes, canchas, horarios, seña mínima, importes, métodos de
+  pago, hash de contraseñas, política de contraseñas, permisos y exportación a CSV.
+- **Integración con SQL Server LocalDB**: crean una base `GestionCanchasPruebas` desde el script, prueban inicio de
+  sesión, bloqueo por intentos, permisos por rol, reservas con seña, turnos duplicados, pagos, devoluciones y caja,
+  y la borran al terminar.
 
 ```sh
 dotnet test GestionCanchas.slnx
 ```
 
-GitHub Actions compila la solución y corre las pruebas en Windows en cada cambio.
+Sin LocalDB, podés correr solo las pruebas que no usan base:
+
+```sh
+dotnet test GestionCanchas.slnx --filter "Categoria!=BaseDeDatos"
+```
+
+GitHub Actions compila la solución y corre todas las pruebas, con LocalDB, en Windows en cada cambio.
 
 ## Estructura del proyecto
 
 ```text
 GestionCanchas/
-├── Entidades/     # Cliente, Cancha, Horario, Reserva, TurnoFijo, Pago y vistas de detalle
-├── Datos/         # acceso a SQL Server con ADO.NET y transacciones
-├── Negocio/       # reglas y validaciones por módulo
-├── Formularios/   # pantallas, grillas reutilizables y mensajes
-├── Scripts/       # GestionCanchas.sql: tablas, restricciones, vistas y datos de prueba
+├── Entidades/     # Cliente, Cancha, Horario, Reserva, TurnoFijo, Pago, Usuario y reportes
+├── Datos/         # conexión, creación y actualización de la base, acceso a SQL Server con ADO.NET
+├── Negocio/       # reglas, permisos, sesión, hash de contraseñas y reportes
+├── Formularios/   # pantallas, tema visual, controles propios, grillas y exportación
+├── Recursos/      # ícono de la aplicación
+├── Scripts/       # GestionCanchas.sql (esquema y datos de ejemplo) y Actualizaciones.sql
+├── appsettings.json
 └── Program.cs
-GestionCanchas.Tests/   # pruebas de las reglas de negocio con xUnit
+GestionCanchas.Tests/   # pruebas de reglas de negocio y de integración con xUnit
+docs/capturas/          # capturas del README
 ```
 
 ## Licencia

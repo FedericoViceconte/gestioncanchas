@@ -7,9 +7,15 @@ Dependencias:
 
 - Microsoft.Data.SqlClient 6.0.2: MIT. Se restaura desde NuGet al compilar.
   https://github.com/dotnet/SqlClient
-- .NET 10 y Windows Forms: MIT.
+- .NET 10 y Windows Forms: MIT. El ejecutable publicado en cada versión incluye
+  el runtime de .NET.
   https://github.com/dotnet/runtime
   https://github.com/dotnet/winforms
+
+Solo para las pruebas, sin distribuirse con la aplicación:
+
+- xUnit 2.9.3: Apache 2.0. https://github.com/xunit/xunit
+- Microsoft.NET.Test.Sdk: MIT. https://github.com/microsoft/vstest
 
 Requisitos que no se distribuyen con el proyecto:
 
@@ -17,6 +23,7 @@ Requisitos que no se distribuyen con el proyecto:
   instala aparte, con la carga de trabajo «Almacenamiento y procesamiento de
   datos» de Visual Studio.
 - Visual Studio: software de Microsoft con su propia licencia.
+- Segoe UI y Segoe Fluent Icons: fuentes de Windows que la aplicación usa desde
+  el sistema; no se incluyen en el proyecto.
 
-Las imágenes de terceros incluidas en el repositorio conservan los derechos de sus
-autores y no forman parte del contenido original cubierto por COPYRIGHT.txt.
+El ícono de la aplicación y las capturas de pantalla son originales del proyecto.
