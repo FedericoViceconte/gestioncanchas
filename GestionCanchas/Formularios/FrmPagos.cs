@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmPagos : Form, IRefrescable
+public partial class FrmPagos : FormularioBase, IRefrescable
 {
     private readonly ClienteNegocio _clienteNegocio = new ClienteNegocio();
     private readonly ReservaNegocio _reservaNegocio = new ReservaNegocio();
@@ -15,8 +15,8 @@ public partial class FrmPagos : Form, IRefrescable
     public FrmPagos()
     {
         InitializeComponent();
-        Grillas.Configurar(dgvReservas);
-        Grillas.Configurar(dgvPagos);
+        Grillas.MensajeVacio(dgvReservas, "Buscá un cliente por DNI para ver sus reservas con saldo pendiente.");
+        Grillas.MensajeVacio(dgvPagos, "Elegí una reserva para ver sus pagos.");
         cboMetodo.Items.AddRange(MetodosPago.Todos);
         cboMetodo.SelectedIndex = 0;
     }
@@ -170,7 +170,7 @@ public partial class FrmPagos : Form, IRefrescable
                 : $"Pago registrado. Saldo pendiente: {saldoRestante:C2}.");
             FrmPrincipal.ActualizarPantallas();
 
-            if (MdiParent == null)
+            if (TopLevel)
                 Refrescar();
         }
         catch (Exception ex)

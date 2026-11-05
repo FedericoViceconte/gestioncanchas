@@ -1,70 +1,61 @@
-﻿
-using GestionCanchas.Entidades;
+﻿using GestionCanchas.Entidades;
 using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmResumen : Form, IRefrescable
+public partial class FrmResumen : FormularioBase, IRefrescable
 {
     private readonly ReservaNegocio _reservaNegocio = new ReservaNegocio();
-    private readonly PagoNegocio _pagoNegocio = new PagoNegocio();
     private readonly ClienteNegocio _clienteNegocio = new ClienteNegocio();
+    private readonly ReporteNegocio _reporteNegocio = new ReporteNegocio();
 
     public FrmResumen()
     {
         InitializeComponent();
-        Grillas.Configurar(dgvTurnos);
-        Grillas.Configurar(dgvDeudores);
-        Resize += (sender, e) => Acomodar();
+        Grillas.MensajeVacio(dgvTurnos, "No hay turnos reservados para hoy.");
+        Grillas.MensajeVacio(dgvDeudores, "Ningún cliente tiene deuda.");
+        dgvTurnos.DataBindingComplete += (sender, e) => dgvTurnos.ClearSelection();
+        dgvDeudores.DataBindingComplete += (sender, e) => dgvDeudores.ClearSelection();
     }
 
-    private void FrmResumen_Load(object sender, EventArgs e)
-    {
-        Acomodar();
-        Refrescar();
-    }
-
-    private void Acomodar()
-    {
-        int alto = Math.Max(ClientSize.Height - dgvTurnos.Top - 12, 100);
-        int anchoTurnos = (int)((ClientSize.Width - 36) * 0.58);
-
-        lblCobrado.Left = (int)(ClientSize.Width * 0.30);
-        lblDeuda.Left = (int)(ClientSize.Width * 0.62);
-        dgvTurnos.Size = new Size(anchoTurnos, alto);
-        dgvDeudores.Left = dgvTurnos.Right + 12;
-        lblDeudores.Left = dgvDeudores.Left;
-        dgvDeudores.Size = new Size(Math.Max(ClientSize.Width - dgvDeudores.Left - 12, 100), alto);
-    }
+    private void FrmResumen_Load(object sender, EventArgs e) => Refrescar();
 
     public void Refrescar()
     {
         try
         {
             DateTime hoy = DateTime.Today;
-            lblTitulo.Text = $"Resumen de hoy: {TurnoFijoDetalle.NombreDia((int)hoy.DayOfWeek)} {hoy:dd/MM/yyyy}";
+            IndicadoresDia indicadores = _reporteNegocio.Indicadores(hoy);
+
+            tarjetaTurnos.Valor = indicadores.TurnosHoy.ToString();
+            tarjetaTurnos.Detalle = "Sin contar las cancelaciones";
+            tarjetaOcupacion.Valor = indicadores.Ocupacion.ToString("P0");
+            tarjetaOcupacion.Detalle = $"{indicadores.TurnosHoy} de {indicadores.TurnosOcupables} turnos posibles";
+            tarjetaCobrado.Valor = indicadores.CobradoHoy.ToString("C0");
+            tarjetaCobrado.Detalle = $"En el mes: {indicadores.CobradoMes:C0}";
+            tarjetaDeuda.Valor = indicadores.DeudaTotal.ToString("C0");
+            tarjetaDeuda.Detalle = indicadores.ClientesConDeuda == 1
+                ? "1 cliente con saldo pendiente"
+                : $"{indicadores.ClientesConDeuda} clientes con saldo pendiente";
 
             List<ReservaDetalle> turnos = _reservaNegocio.Listar(new ReservaFiltro { Fecha = hoy })
                 .Where(r => r.Estado != EstadosReserva.Cancelada)
+                .OrderBy(r => r.Horario)
+                .ThenBy(r => r.Cancha)
                 .ToList();
             dgvTurnos.DataSource = turnos;
             Grillas.Ocultar(dgvTurnos, "IdReserva", "Fecha", "Dni", "Importe", "TotalPagado");
             Grillas.Formato(dgvTurnos, "C2", "Saldo");
 
-            decimal cobrado = _pagoNegocio.Listar(null, hoy, hoy)
-                .Where(p => !p.Anulado)
-                .Sum(p => p.Tipo == TiposPago.Devolucion ? -p.Importe : p.Importe);
+            grafico.Datos = _reporteNegocio.IngresosUltimosDias(hoy, 7);
 
-            List<Cliente> deudores = _clienteNegocio.Listar(true)
+            dgvDeudores.DataSource = _clienteNegocio.Listar(true)
                 .OrderByDescending(c => c.Deuda)
                 .ToList();
-            dgvDeudores.DataSource = deudores;
             Grillas.Ocultar(dgvDeudores, "Dni");
             Grillas.Formato(dgvDeudores, "C2", "Deuda");
-
-            lblTurnos.Text = $"Turnos de hoy: {turnos.Count}";
-            lblCobrado.Text = $"Cobrado hoy: {cobrado:C2}";
-            lblDeuda.Text = $"Deuda total: {deudores.Sum(c => c.Deuda):C2}";
+            dgvTurnos.ClearSelection();
+            dgvDeudores.ClearSelection();
         }
         catch (Exception ex)
         {
@@ -74,7 +65,11 @@ public partial class FrmResumen : Form, IRefrescable
 
     private void dgvDeudores_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
     {
-        if (dgvDeudores.Columns[e.ColumnIndex].Name == "Deuda")
-            e.CellStyle.ForeColor = Color.Firebrick;
+        if (dgvDeudores.Columns[e.ColumnIndex].Name != "Deuda")
+            return;
+
+        e.CellStyle.ForeColor = Tema.Peligro;
+        e.CellStyle.SelectionForeColor = Tema.Peligro;
+        e.CellStyle.Font = Tema.TextoNegrita9;
     }
 }

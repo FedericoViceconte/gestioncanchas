@@ -14,6 +14,7 @@ public class CanchaNegocio
     public void Guardar(Cancha cancha)
     {
         Validar(cancha);
+        Sesion.ExigirAdministrador("modificar las canchas");
 
         if (_datos.ExisteNumero(cancha.Numero, cancha.IdCancha))
             throw new ValidacionException($"Ya existe la cancha número {cancha.Numero}.");
@@ -28,6 +29,7 @@ public class CanchaNegocio
 
     public void Eliminar(int idCancha)
     {
+        Sesion.ExigirAdministrador("eliminar canchas");
         if (_datos.TieneReservas(idCancha))
             throw new ValidacionException(
                 "No se puede eliminar la cancha porque tiene reservas. Si no se va a usar, pasala a Mantenimiento.");

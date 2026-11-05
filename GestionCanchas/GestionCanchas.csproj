@@ -8,7 +8,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <RootNamespace>GestionCanchas</RootNamespace>
+    <AssemblyTitle>Gestión de Canchas</AssemblyTitle>
+    <Product>Gestión de Canchas</Product>
+    <Authors>Federico Viceconte</Authors>
+    <Copyright>© 2026 Federico Viceconte</Copyright>
+    <Version>2.0.0</Version>
+    <ApplicationIcon>Recursos\GestionCanchas.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Scripts\*.sql" />
+    <EmbeddedResource Include="Recursos\GestionCanchas.ico" />
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    <InternalsVisibleTo Include="GestionCanchas.Tests" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />

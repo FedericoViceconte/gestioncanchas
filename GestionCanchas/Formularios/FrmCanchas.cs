@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmCanchas : Form, IRefrescable
+public partial class FrmCanchas : FormularioBase, IRefrescable
 {
     private readonly CanchaNegocio _negocio = new CanchaNegocio();
     private int _idSeleccionada;

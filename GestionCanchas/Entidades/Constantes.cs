@@ -33,3 +33,11 @@ public static class MetodosPago
 
     public static readonly string[] Todos = { Efectivo, Transferencia, Tarjeta };
 }
+
+public static class Roles
+{
+    public const string Administrador = "Administrador";
+    public const string Recepcionista = "Recepcionista";
+
+    public static readonly string[] Todos = { Administrador, Recepcionista };
+}

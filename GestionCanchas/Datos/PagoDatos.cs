@@ -54,11 +54,13 @@ public class PagoDatos
         using SqlConnection conexion = Conexion.Abrir();
         using var comando = new SqlCommand(
             @"SELECT p.IdPago, p.IdReserva, p.FechaPago, p.Importe, p.MetodoPago, p.Tipo, p.Anulado,
-                     r.Fecha AS FechaReserva, c.Apellido, c.Nombre, c.DNI, ca.Numero, ca.Tipo
+                     r.Fecha AS FechaReserva, c.Apellido, c.Nombre, c.DNI, ca.Numero, ca.Tipo AS TipoCancha,
+                     u.NombreUsuario
               FROM PAGOS p
               JOIN RESERVAS r ON r.IdReserva = p.IdReserva
               JOIN CLIENTES c ON c.IdCliente = r.IdCliente
               JOIN CANCHAS ca ON ca.IdCancha = r.IdCancha
+              LEFT JOIN USUARIOS u ON u.IdUsuario = p.IdUsuario
               WHERE p.FechaPago BETWEEN @desde AND @hasta
                 AND (@dni IS NULL OR c.DNI = @dni)
               ORDER BY p.FechaPago DESC, p.IdPago DESC", conexion);
@@ -82,7 +84,8 @@ public class PagoDatos
                 FechaReserva = (DateTime)lector["FechaReserva"],
                 Cliente = $"{lector["Apellido"]}, {lector["Nombre"]}",
                 Dni = (string)lector["DNI"],
-                Cancha = Cancha.Describir((int)lector["Numero"], (string)lector["Tipo"])
+                Cancha = Cancha.Describir((int)lector["Numero"], (string)lector["TipoCancha"]),
+                Usuario = lector["NombreUsuario"] as string ?? "—"
             });
         }
         return pagos;
@@ -139,13 +142,14 @@ public class PagoDatos
     internal static void Insertar(Pago pago, SqlConnection conexion, SqlTransaction transaccion)
     {
         using var comando = new SqlCommand(
-            @"INSERT INTO PAGOS (IdReserva, FechaPago, Importe, MetodoPago, Tipo)
-              VALUES (@idReserva, @fecha, @importe, @metodo, @tipo)", conexion, transaccion);
+            @"INSERT INTO PAGOS (IdReserva, FechaPago, Importe, MetodoPago, Tipo, IdUsuario)
+              VALUES (@idReserva, @fecha, @importe, @metodo, @tipo, @usuario)", conexion, transaccion);
         comando.Parameters.AddWithValue("@idReserva", pago.IdReserva);
         comando.Parameters.Add("@fecha", SqlDbType.Date).Value = pago.FechaPago.Date;
         comando.Parameters.AddWithValue("@importe", pago.Importe);
         comando.Parameters.AddWithValue("@metodo", pago.MetodoPago);
         comando.Parameters.AddWithValue("@tipo", pago.Tipo);
+        comando.Parameters.Add("@usuario", SqlDbType.Int).Value = (object)pago.IdUsuario ?? DBNull.Value;
         comando.ExecuteNonQuery();
     }
 }

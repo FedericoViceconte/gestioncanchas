@@ -1,4 +1,4 @@
-# Builds the Windows Forms application and runs the business-rule tests on every push and pull request.
+# Builds the Windows Forms application and runs the unit and SQL Server LocalDB tests on every push and pull request.
 name: Compilación y pruebas
 
 on:
@@ -18,6 +18,13 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
+      - name: Iniciar SQL Server LocalDB
+        shell: pwsh
+        run: |
+          sqllocaldb info MSSQLLocalDB *> $null
+          if ($LASTEXITCODE -ne 0) { sqllocaldb create MSSQLLocalDB }
+          sqllocaldb start MSSQLLocalDB
+          sqllocaldb info MSSQLLocalDB
       - name: Restaurar paquetes
         run: dotnet restore GestionCanchas.slnx
       - name: Compilar

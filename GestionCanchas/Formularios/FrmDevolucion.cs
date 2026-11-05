@@ -4,7 +4,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmDevolucion : Form
+public partial class FrmDevolucion : FormularioBase
 {
     private readonly PagoNegocio _pagoNegocio = new PagoNegocio();
     private readonly ReservaDetalle _reserva;

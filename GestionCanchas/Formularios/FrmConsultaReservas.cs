@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmConsultaReservas : Form, IRefrescable
+public partial class FrmConsultaReservas : FormularioBase, IRefrescable
 {
     private readonly ReservaNegocio _reservaNegocio = new ReservaNegocio();
     private readonly PagoNegocio _pagoNegocio = new PagoNegocio();
@@ -12,8 +12,10 @@ public partial class FrmConsultaReservas : Form, IRefrescable
     public FrmConsultaReservas()
     {
         InitializeComponent();
-        Grillas.Configurar(dgvReservas);
-        Grillas.Configurar(dgvPagos);
+        Exportar.AgregarBoton(btnLimpiar, dgvReservas, "reservas");
+        btnAnularPago.Visible = btnDevolucion.Visible = Sesion.EsAdministrador;
+        Grillas.MensajeVacio(dgvReservas, "No hay reservas con esos filtros.");
+        Grillas.MensajeVacio(dgvPagos, "La reserva seleccionada no tiene pagos.");
     }
 
     private void FrmConsultaReservas_Load(object sender, EventArgs e)

@@ -17,149 +17,174 @@ partial class FrmPrincipal
 
     private void InitializeComponent()
     {
-        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmPrincipal));
-        menuPrincipal = new MenuStrip();
-        mnuInicio = new ToolStripMenuItem();
-        mnuArchivo = new ToolStripMenuItem();
-        mnuSalir = new ToolStripMenuItem();
-        mnuClientes = new ToolStripMenuItem();
-        mnuGestionarClientes = new ToolStripMenuItem();
-        mnuCanchas = new ToolStripMenuItem();
-        mnuGestionarCanchas = new ToolStripMenuItem();
-        mnuHorarios = new ToolStripMenuItem();
-        mnuReservas = new ToolStripMenuItem();
-        mnuNuevaReserva = new ToolStripMenuItem();
-        mnuConsultarReservas = new ToolStripMenuItem();
-        mnuDisponibilidad = new ToolStripMenuItem();
-        mnuTurnosFijos = new ToolStripMenuItem();
-        mnuPagos = new ToolStripMenuItem();
-        mnuRegistrarPago = new ToolStripMenuItem();
-        mnuConsultarPagos = new ToolStripMenuItem();
-        barraEstado = new StatusStrip();
-        lblEstadoConexion = new ToolStripStatusLabel();
-        menuPrincipal.SuspendLayout();
-        barraEstado.SuspendLayout();
+        panelLateral = new Panel();
+        panelNavegacion = new Panel();
+        panelUsuario = new Panel();
+        btnCerrarSesion = new BotonNavegacion();
+        btnCambiarClave = new BotonNavegacion();
+        panelMarca = new Panel();
+        panelEncabezado = new Panel();
+        lblConexion = new Label();
+        btnNuevaReserva = new Button();
+        lblSubtitulo = new Label();
+        lblTitulo = new Label();
+        panelContenido = new Panel();
+        panelLateral.SuspendLayout();
+        panelUsuario.SuspendLayout();
+        panelEncabezado.SuspendLayout();
         SuspendLayout();
-        menuPrincipal.Items.AddRange(new ToolStripItem[] { mnuInicio, mnuArchivo, mnuClientes, mnuCanchas, mnuReservas, mnuPagos });
-        menuPrincipal.Location = new Point(0, 0);
-        menuPrincipal.Name = "menuPrincipal";
-        menuPrincipal.Size = new Size(887, 24);
-        menuPrincipal.TabIndex = 0;
-        mnuInicio.Name = "mnuInicio";
-        mnuInicio.Size = new Size(48, 20);
-        mnuInicio.Text = "&Inicio";
-        mnuInicio.Click += mnuInicio_Click;
-        mnuArchivo.DropDownItems.AddRange(new ToolStripItem[] { mnuSalir });
-        mnuArchivo.Name = "mnuArchivo";
-        mnuArchivo.Size = new Size(60, 20);
-        mnuArchivo.Text = "&Archivo";
-        mnuSalir.Name = "mnuSalir";
-        mnuSalir.Size = new Size(96, 22);
-        mnuSalir.Text = "&Salir";
-        mnuSalir.Click += mnuSalir_Click;
-        mnuClientes.DropDownItems.AddRange(new ToolStripItem[] { mnuGestionarClientes });
-        mnuClientes.Name = "mnuClientes";
-        mnuClientes.Size = new Size(61, 20);
-        mnuClientes.Text = "&Clientes";
-        mnuGestionarClientes.Name = "mnuGestionarClientes";
-        mnuGestionarClientes.Size = new Size(167, 22);
-        mnuGestionarClientes.Text = "Gestionar clientes";
-        mnuGestionarClientes.Click += mnuGestionarClientes_Click;
-        mnuCanchas.DropDownItems.AddRange(new ToolStripItem[] { mnuGestionarCanchas, mnuHorarios });
-        mnuCanchas.Name = "mnuCanchas";
-        mnuCanchas.Size = new Size(64, 20);
-        mnuCanchas.Text = "C&anchas";
-        mnuGestionarCanchas.Name = "mnuGestionarCanchas";
-        mnuGestionarCanchas.Size = new Size(170, 22);
-        mnuGestionarCanchas.Text = "Gestionar canchas";
-        mnuGestionarCanchas.Click += mnuGestionarCanchas_Click;
-        mnuHorarios.Name = "mnuHorarios";
-        mnuHorarios.Size = new Size(170, 22);
-        mnuHorarios.Text = "Horarios";
-        mnuHorarios.Click += mnuHorarios_Click;
-        mnuReservas.DropDownItems.AddRange(new ToolStripItem[] { mnuNuevaReserva, mnuConsultarReservas, mnuDisponibilidad, mnuTurnosFijos });
-        mnuReservas.Name = "mnuReservas";
-        mnuReservas.Size = new Size(64, 20);
-        mnuReservas.Text = "&Reservas";
-        mnuNuevaReserva.Name = "mnuNuevaReserva";
-        mnuNuevaReserva.Size = new Size(170, 22);
-        mnuNuevaReserva.Text = "Nueva reserva";
-        mnuNuevaReserva.Click += mnuNuevaReserva_Click;
-        mnuConsultarReservas.Name = "mnuConsultarReservas";
-        mnuConsultarReservas.Size = new Size(170, 22);
-        mnuConsultarReservas.Text = "Consultar reservas";
-        mnuConsultarReservas.Click += mnuConsultarReservas_Click;
-        mnuDisponibilidad.Name = "mnuDisponibilidad";
-        mnuDisponibilidad.Size = new Size(170, 22);
-        mnuDisponibilidad.Text = "Disponibilidad";
-        mnuDisponibilidad.Click += mnuDisponibilidad_Click;
-        mnuTurnosFijos.Name = "mnuTurnosFijos";
-        mnuTurnosFijos.Size = new Size(170, 22);
-        mnuTurnosFijos.Text = "Turnos fijos";
-        mnuTurnosFijos.Click += mnuTurnosFijos_Click;
-        mnuPagos.DropDownItems.AddRange(new ToolStripItem[] { mnuRegistrarPago, mnuConsultarPagos });
-        mnuPagos.Name = "mnuPagos";
-        mnuPagos.Size = new Size(51, 20);
-        mnuPagos.Text = "&Pagos";
-        mnuRegistrarPago.Name = "mnuRegistrarPago";
-        mnuRegistrarPago.Size = new Size(160, 22);
-        mnuRegistrarPago.Text = "Registrar pago";
-        mnuRegistrarPago.Click += mnuRegistrarPago_Click;
-        mnuConsultarPagos.Name = "mnuConsultarPagos";
-        mnuConsultarPagos.Size = new Size(160, 22);
-        mnuConsultarPagos.Text = "Consultar pagos";
-        mnuConsultarPagos.Click += mnuConsultarPagos_Click;
-        barraEstado.Items.AddRange(new ToolStripItem[] { lblEstadoConexion });
-        barraEstado.Location = new Point(0, 519);
-        barraEstado.Name = "barraEstado";
-        barraEstado.Size = new Size(887, 22);
-        barraEstado.TabIndex = 1;
-        lblEstadoConexion.Name = "lblEstadoConexion";
-        lblEstadoConexion.Size = new Size(81, 17);
-        lblEstadoConexion.Text = "Conectando...";
+        //
+        // panelLateral
+        //
+        panelLateral.BackColor = Tema.Lateral;
+        panelLateral.Controls.Add(panelNavegacion);
+        panelLateral.Controls.Add(panelUsuario);
+        panelLateral.Controls.Add(panelMarca);
+        panelLateral.Dock = DockStyle.Left;
+        panelLateral.Name = "panelLateral";
+        panelLateral.Size = new Size(240, 760);
+        panelLateral.TabIndex = 2;
+        //
+        // panelNavegacion
+        //
+        panelNavegacion.AutoScroll = true;
+        panelNavegacion.Dock = DockStyle.Fill;
+        panelNavegacion.Name = "panelNavegacion";
+        panelNavegacion.Padding = new Padding(0, 4, 0, 8);
+        panelNavegacion.TabIndex = 1;
+        //
+        // panelUsuario
+        //
+        panelUsuario.Controls.Add(btnCambiarClave);
+        panelUsuario.Controls.Add(btnCerrarSesion);
+        panelUsuario.Dock = DockStyle.Bottom;
+        panelUsuario.Name = "panelUsuario";
+        panelUsuario.Padding = new Padding(0, 0, 0, 10);
+        panelUsuario.Size = new Size(240, 150);
+        panelUsuario.TabIndex = 2;
+        panelUsuario.Paint += panelUsuario_Paint;
+        //
+        // btnCambiarClave
+        //
+        btnCambiarClave.Dock = DockStyle.Bottom;
+        btnCambiarClave.Height = 38;
+        btnCambiarClave.Icono = Icono.Llave;
+        btnCambiarClave.Name = "btnCambiarClave";
+        btnCambiarClave.Text = "Cambiar contraseña";
+        btnCambiarClave.Click += btnCambiarClave_Click;
+        //
+        // btnCerrarSesion
+        //
+        btnCerrarSesion.Dock = DockStyle.Bottom;
+        btnCerrarSesion.Height = 38;
+        btnCerrarSesion.Icono = Icono.Salir;
+        btnCerrarSesion.Name = "btnCerrarSesion";
+        btnCerrarSesion.Text = "Cerrar sesión";
+        btnCerrarSesion.Click += btnCerrarSesion_Click;
+        //
+        // panelMarca
+        //
+        panelMarca.Dock = DockStyle.Top;
+        panelMarca.Name = "panelMarca";
+        panelMarca.Size = new Size(240, 84);
+        panelMarca.TabIndex = 0;
+        panelMarca.Paint += panelMarca_Paint;
+        //
+        // panelEncabezado
+        //
+        panelEncabezado.BackColor = Tema.Superficie;
+        panelEncabezado.Controls.Add(lblConexion);
+        panelEncabezado.Controls.Add(btnNuevaReserva);
+        panelEncabezado.Controls.Add(lblSubtitulo);
+        panelEncabezado.Controls.Add(lblTitulo);
+        panelEncabezado.Dock = DockStyle.Top;
+        panelEncabezado.Name = "panelEncabezado";
+        panelEncabezado.Size = new Size(1040, 76);
+        panelEncabezado.TabIndex = 1;
+        panelEncabezado.Paint += panelEncabezado_Paint;
+        //
+        // lblConexion
+        //
+        lblConexion.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        lblConexion.AutoSize = false;
+        lblConexion.Font = Tema.Texto9;
+        lblConexion.ForeColor = Tema.TextoSecundario;
+        lblConexion.Location = new Point(560, 28);
+        lblConexion.Name = "lblConexion";
+        lblConexion.Size = new Size(300, 20);
+        lblConexion.TextAlign = ContentAlignment.MiddleRight;
+        //
+        // btnNuevaReserva
+        //
+        btnNuevaReserva.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnNuevaReserva.Location = new Point(876, 20);
+        btnNuevaReserva.Name = "btnNuevaReserva";
+        btnNuevaReserva.Size = new Size(144, 36);
+        btnNuevaReserva.TabIndex = 0;
+        btnNuevaReserva.Text = "+  Nueva reserva";
+        btnNuevaReserva.Click += btnNuevaReserva_Click;
+        //
+        // lblSubtitulo
+        //
+        lblSubtitulo.AutoEllipsis = true;
+        lblSubtitulo.Font = Tema.Texto9;
+        lblSubtitulo.ForeColor = Tema.TextoSecundario;
+        lblSubtitulo.Location = new Point(28, 44);
+        lblSubtitulo.Name = "lblSubtitulo";
+        lblSubtitulo.Size = new Size(520, 20);
+        //
+        // lblTitulo
+        //
+        lblTitulo.AutoSize = true;
+        lblTitulo.Font = Tema.Titulo;
+        lblTitulo.ForeColor = Tema.Texto;
+        lblTitulo.Location = new Point(24, 12);
+        lblTitulo.Name = "lblTitulo";
+        lblTitulo.Text = "Inicio";
+        //
+        // panelContenido
+        //
+        panelContenido.BackColor = Tema.Fondo;
+        panelContenido.Dock = DockStyle.Fill;
+        panelContenido.Name = "panelContenido";
+        panelContenido.Padding = new Padding(20, 16, 20, 20);
+        panelContenido.TabIndex = 0;
+        //
+        // FrmPrincipal
+        //
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        BackColor = Color.Green;
-        BackgroundImage = (Image)resources.GetObject("$this.BackgroundImage");
-        BackgroundImageLayout = ImageLayout.Stretch;
-        ClientSize = new Size(887, 541);
-        Controls.Add(barraEstado);
-        Controls.Add(menuPrincipal);
-        ForeColor = SystemColors.ControlLight;
-        IsMdiContainer = true;
-        MainMenuStrip = menuPrincipal;
+        ClientSize = new Size(1280, 760);
+        Controls.Add(panelContenido);
+        Controls.Add(panelEncabezado);
+        Controls.Add(panelLateral);
+        KeyPreview = true;
+        MinimumSize = new Size(1100, 680);
         Name = "FrmPrincipal";
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "Gestión de Canchas de Fútbol";
+        Text = "Gestión de Canchas";
         WindowState = FormWindowState.Maximized;
         Load += FrmPrincipal_Load;
-        menuPrincipal.ResumeLayout(false);
-        menuPrincipal.PerformLayout();
-        barraEstado.ResumeLayout(false);
-        barraEstado.PerformLayout();
+        KeyDown += FrmPrincipal_KeyDown;
+        panelLateral.ResumeLayout(false);
+        panelUsuario.ResumeLayout(false);
+        panelEncabezado.ResumeLayout(false);
+        panelEncabezado.PerformLayout();
         ResumeLayout(false);
-        PerformLayout();
     }
 
     #endregion
 
-    private MenuStrip menuPrincipal;
-    private ToolStripMenuItem mnuInicio;
-    private ToolStripMenuItem mnuArchivo;
-    private ToolStripMenuItem mnuSalir;
-    private ToolStripMenuItem mnuClientes;
-    private ToolStripMenuItem mnuGestionarClientes;
-    private ToolStripMenuItem mnuCanchas;
-    private ToolStripMenuItem mnuGestionarCanchas;
-    private ToolStripMenuItem mnuHorarios;
-    private ToolStripMenuItem mnuReservas;
-    private ToolStripMenuItem mnuNuevaReserva;
-    private ToolStripMenuItem mnuConsultarReservas;
-    private ToolStripMenuItem mnuDisponibilidad;
-    private ToolStripMenuItem mnuTurnosFijos;
-    private ToolStripMenuItem mnuPagos;
-    private ToolStripMenuItem mnuRegistrarPago;
-    private ToolStripMenuItem mnuConsultarPagos;
-    private StatusStrip barraEstado;
-    private ToolStripStatusLabel lblEstadoConexion;
+    private Panel panelLateral;
+    private Panel panelNavegacion;
+    private Panel panelUsuario;
+    private BotonNavegacion btnCambiarClave;
+    private BotonNavegacion btnCerrarSesion;
+    private Panel panelMarca;
+    private Panel panelEncabezado;
+    private Label lblConexion;
+    private Button btnNuevaReserva;
+    private Label lblSubtitulo;
+    private Label lblTitulo;
+    private Panel panelContenido;
 }

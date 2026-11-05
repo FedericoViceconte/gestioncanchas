@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmHorarios : Form, IRefrescable
+public partial class FrmHorarios : FormularioBase, IRefrescable
 {
     private readonly HorarioNegocio _negocio = new HorarioNegocio();
 

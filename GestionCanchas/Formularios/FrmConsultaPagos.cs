@@ -3,14 +3,15 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmConsultaPagos : Form, IRefrescable
+public partial class FrmConsultaPagos : FormularioBase, IRefrescable
 {
     private readonly PagoNegocio _negocio = new PagoNegocio();
 
     public FrmConsultaPagos()
     {
         InitializeComponent();
-        Grillas.Configurar(dgvPagos);
+        Exportar.AgregarBoton(btnBuscar, dgvPagos, "pagos");
+        Grillas.MensajeVacio(dgvPagos, "No hay pagos en el período elegido.");
         dtpDesde.Value = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         dtpHasta.Value = DateTime.Today;
     }

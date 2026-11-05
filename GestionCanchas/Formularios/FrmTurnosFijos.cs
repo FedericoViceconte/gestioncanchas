@@ -4,7 +4,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmTurnosFijos : Form, IRefrescable
+public partial class FrmTurnosFijos : FormularioBase, IRefrescable
 {
     private static readonly DayOfWeek[] Dias =
     {
@@ -21,7 +21,7 @@ public partial class FrmTurnosFijos : Form, IRefrescable
     public FrmTurnosFijos()
     {
         InitializeComponent();
-        Grillas.Configurar(dgvTurnos);
+        Grillas.MensajeVacio(dgvTurnos, "Todavía no hay turnos fijos.");
         nudSemanas.Maximum = TurnoFijoNegocio.MaximoSemanas;
         foreach (DayOfWeek dia in Dias)
             cboDia.Items.Add(TurnoFijoDetalle.NombreDia((int)dia));

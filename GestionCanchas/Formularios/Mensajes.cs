@@ -10,12 +10,21 @@ public static class Mensajes
     public static void Info(string texto) =>
         MessageBox.Show(texto, Titulo, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+    public static void Aviso(string texto) =>
+        MessageBox.Show(texto, Titulo, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
     public static bool Confirmar(string texto) =>
         MessageBox.Show(texto, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
             MessageBoxDefaultButton.Button2) == DialogResult.Yes;
 
     public static void Error(Exception ex)
     {
+        if (ex is IOException)
+        {
+            MessageBox.Show(ex.Message, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            return;
+        }
+
         if (ex is ValidacionException)
         {
             MessageBox.Show(ex.Message, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -49,7 +58,7 @@ public static class Mensajes
             case 53:
             case 4060:
                 return "No se pudo conectar a la base de datos.\n\n" +
-                       "Verificá que SQL Server LocalDB esté instalado y que se haya ejecutado el script GestionCanchas.sql.";
+                       "Verificá que SQL Server LocalDB esté instalado y en funcionamiento, o revisá la cadena de conexión en appsettings.json.";
             default:
                 return "Error de base de datos: " + ex.Message;
         }

@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmClientes : Form, IRefrescable
+public partial class FrmClientes : FormularioBase, IRefrescable
 {
     private readonly ClienteNegocio _negocio = new ClienteNegocio();
     private int _idSeleccionado;
@@ -11,7 +11,8 @@ public partial class FrmClientes : Form, IRefrescable
     public FrmClientes()
     {
         InitializeComponent();
-        Grillas.Configurar(dgvClientes);
+        Exportar.AgregarBoton(chkSoloDeuda, dgvClientes, "clientes");
+        Grillas.MensajeVacio(dgvClientes, "No se encontraron clientes.");
     }
 
     private void FrmClientes_Load(object sender, EventArgs e) => Refrescar();

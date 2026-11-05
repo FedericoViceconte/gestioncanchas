@@ -55,6 +55,7 @@ public class ReservaNegocio
         reserva.Fecha = reserva.Fecha.Date;
         reserva.Estado = sena.Importe == reserva.Importe ? EstadosReserva.Pagado : EstadosReserva.Senado;
         sena.FechaPago = DateTime.Today;
+        sena.IdUsuario = Sesion.IdUsuario;
 
         return _reservaDatos.InsertarConSena(reserva, sena);
     }

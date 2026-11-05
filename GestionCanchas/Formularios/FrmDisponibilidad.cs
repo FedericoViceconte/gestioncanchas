@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmDisponibilidad : Form, IRefrescable
+public partial class FrmDisponibilidad : FormularioBase, IRefrescable
 {
     private const string TextoLibre = "Libre";
 
@@ -74,19 +74,30 @@ public partial class FrmDisponibilidad : Form, IRefrescable
                 EstadosReserva.Ausente =>$"{turno.Cliente} (no vino)",
                 _ => turno.Cliente
             };
-            celda.Style.BackColor = Color.MistyRose;
+            bool senado = turno.Estado == EstadosReserva.Senado || turno.Estado == EstadosReserva.Pendiente;
+            Pintar(celda, senado ? Tema.AdvertenciaSuave : Color.FromArgb(219, 234, 254),
+                senado ? Tema.Advertencia : Tema.Informacion, Tema.TextoNegrita9);
             return;
         }
 
         if (yaPaso)
         {
-            celda.Value = "-";
-            celda.Style.BackColor = Color.Gainsboro;
+            celda.Value = "—";
+            Pintar(celda, Color.FromArgb(241, 243, 242), Tema.TextoSecundario, Tema.Texto9);
             return;
         }
 
         celda.Value = TextoLibre;
-        celda.Style.BackColor = Color.Honeydew;
+        Pintar(celda, Tema.Superficie, Tema.Primario, Tema.TextoNegrita9);
+    }
+
+    private static void Pintar(DataGridViewCell celda, Color fondo, Color texto, Font fuente)
+    {
+        celda.Style.BackColor = fondo;
+        celda.Style.ForeColor = texto;
+        celda.Style.SelectionBackColor = ControlPaint.Dark(fondo, 0.05f);
+        celda.Style.SelectionForeColor = texto;
+        celda.Style.Font = fuente;
     }
 
     private void dgvDisponibilidad_CellDoubleClick(object sender, DataGridViewCellEventArgs e)

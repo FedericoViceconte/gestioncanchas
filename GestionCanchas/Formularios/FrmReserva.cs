@@ -3,7 +3,7 @@ using GestionCanchas.Negocio;
 
 namespace GestionCanchas.Formularios;
 
-public partial class FrmReserva : Form
+public partial class FrmReserva : FormularioBase
 {
     private readonly ReservaNegocio _reservaNegocio = new ReservaNegocio();
     private readonly ClienteNegocio _clienteNegocio = new ClienteNegocio();

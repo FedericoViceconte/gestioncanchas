@@ -40,6 +40,7 @@ public class PagoNegocio
             throw new ValidacionException($"El importe supera el saldo pendiente ({reserva.Saldo:C2}).");
 
         pago.FechaPago = DateTime.Today;
+        pago.IdUsuario = Sesion.IdUsuario;
         decimal saldoRestante = reserva.Saldo - pago.Importe;
         string estado = saldoRestante == 0 ? EstadosReserva.Pagado : EstadosReserva.Senado;
 
@@ -49,6 +50,7 @@ public class PagoNegocio
 
     public void Anular(int idPago)
     {
+        Sesion.ExigirAdministrador("anular pagos");
         Pago pago = _pagoDatos.ObtenerPorId(idPago);
         if (pago == null)
             throw new ValidacionException("Seleccioná un pago.");
@@ -72,6 +74,7 @@ public class PagoNegocio
 
     public void RegistrarDevolucion(int idReserva, decimal importe, string metodo)
     {
+        Sesion.ExigirAdministrador("registrar devoluciones");
         ReservaDetalle reserva = _reservaDatos.ObtenerDetalle(idReserva);
         if (reserva == null)
             throw new ValidacionException("La reserva no existe.");
@@ -92,7 +95,8 @@ public class PagoNegocio
             FechaPago = DateTime.Today,
             Importe = importe,
             MetodoPago = metodo,
-            Tipo = TiposPago.Devolucion
+            Tipo = TiposPago.Devolucion,
+            IdUsuario = Sesion.IdUsuario
         };
         _pagoDatos.Registrar(devolucion, EstadosReserva.Cancelada);
     }

@@ -31,4 +31,7 @@ public class PagoDetalle
     public string Tipo { get; set; }
 
     public bool Anulado { get; set; }
+
+    [DisplayName("Registró")]
+    public string Usuario { get; set; }
 }

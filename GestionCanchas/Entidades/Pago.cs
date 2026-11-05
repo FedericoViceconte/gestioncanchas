@@ -21,4 +21,7 @@ public class Pago
     public string Tipo { get; set; } = TiposPago.Pago;
 
     public bool Anulado { get; set; }
+
+    [Browsable(false)]
+    public int? IdUsuario { get; set; }
 }
